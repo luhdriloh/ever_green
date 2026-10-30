@@ -18,8 +18,8 @@ function dialog_post_init(player)
     end,
 
     update = function(self)
-      local is_player_close = abs(player.x - self.x) < 12 and 
-         abs(player.y - self.y) < 12
+      local is_player_close = abs(player.x - self.x) < 8 and 
+         abs(player.y - self.y) < 8
       
       if is_player_close then
         player.can_jump = false
@@ -34,8 +34,9 @@ function dialog_post_init(player)
         dialog({
           txt = self.dialog_text[self.dialog_counter],
           dl = 2,
-          w = 96,
-          x = 16,
+          w = 112,
+          x = 8,
+          y = 16,
         })
       end
     end,

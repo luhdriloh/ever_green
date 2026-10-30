@@ -8,17 +8,20 @@ function plinit()
     grounded = false,
     can_jump = true,
     active_orb = 1,
+    platforms = {},
+
     -- animation values
     state = character_animstate.idle,
     sp = character_animstate.idle.start,
     step = 0,
     orbs = nil,
 
-    level_set = function(self, x, y, orbs)
+    level_set = function(self, x, y, orbs, platforms)
       self.x = x * 8
       self.y = y * 8
       self.active_orb = 1
       self.orbs = orbs
+      self.platforms = platforms
     end,
 
     update = function(self)
@@ -67,7 +70,12 @@ function plinit()
 
       -- collision checks
       local collide = check_collision(self, solid_flag)
-      if collide then
+      local dynamic_collide = false
+      for platform in all(self.platforms) do
+        dynamic_collide = dynamic_collide or check_dynamic_collisions(self, platform)
+      end
+
+      if collide or dynamic_collide then
         self.x = oldx
       end
 

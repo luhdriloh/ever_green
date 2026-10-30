@@ -10,6 +10,8 @@ function level_manager()
     dialog_post = nil,
     teleport_orb = nil,
     clone_orb = nil,
+    platforms = nil,
+    buttons = nil,
     background = 1,
     level = 1,
 
@@ -19,6 +21,8 @@ function level_manager()
       self.dialog_post = dialog_post_init(self.player)
       self.teleport_orb = teleport_orb_init(0, 0)
       self.clone_orb = teleport_orb_init(0, 0)
+      self.platforms = {}
+      self.buttons = {}
     end,
 
     advance_level = function(self)
@@ -37,6 +41,10 @@ function level_manager()
         add(orbs, self.clone_orb)
       end
 
+      -- cleanup
+      self.platforms = {}
+      self.dialog_post:level_set(-20, -20)
+
       -- Set map value 
       -- 8 Columns of levels in the map editor
       map_x = ((self.level - 1) % 8) * 16
@@ -49,28 +57,36 @@ function level_manager()
         for y=0, 15 do
           local x_coord = x + map_x
           local y_coord = y + map_y
-          local t = mget(x_coord, y_coord)
+          local sprite_num = mget(x_coord, y_coord)
           
-          local flag_val = fget(t)
+          local flag_val = fget(sprite_num)
           if finish_door_flag_val == flag_val then
             mset(x_coord, y_coord, 0)
             self.finish_door:level_set(x, y)
           elseif player_flag_val == flag_val then
             mset(x_coord, y_coord, 0)
-            self.player:level_set(x, y, orbs)
+            self.player:level_set(x, y, orbs, self.platforms)
           elseif dialog_post_flag_val == flag_val then
             mset(x_coord, y_coord, 0)
             self.dialog_post:level_set(x, y, level_data.dialog)
+          elseif platform_sprite_to_direction[sprite_num] then
+            mset(x_coord, y_coord, 0)
+            add(self.platforms, platform_init(self.player, x, y, platform_sprite_to_direction[sprite_num]))
           end
 
         end
       end
       
+      -- give buttons a reference to all the platforms
+
       -- self.player:level_set(level_data.x, level_data.y, orbs)
       self.background = level_data.background
     end,
 
     update = function(self)
+      for platform in all(self.platforms) do
+        platform:update()
+      end
       self.player:update()
       self.finish_door:update()
       self.dialog_post:update()
@@ -79,6 +95,9 @@ function level_manager()
     draw = function(self)
       cls(self.background)
       map(map_x, map_y, 0, 0, 16, 16)
+      for platform in all(self.platforms) do
+        platform:draw()
+      end
       self.finish_door:draw()
       self.dialog_post:draw()
       self.player:draw()
