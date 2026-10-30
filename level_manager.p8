@@ -58,7 +58,8 @@ function level_manager()
           elseif player_flag_val == flag_val then
             mset(x_coord, y_coord, 0)
             self.player:level_set(x, y, orbs)
-          elseif dialog_post_flag == flag_val then
+          elseif dialog_post_flag_val == flag_val then
+            mset(x_coord, y_coord, 0)
             self.dialog_post:level_set(x, y, level_data.dialog)
           end
 
@@ -78,9 +79,9 @@ function level_manager()
     draw = function(self)
       cls(self.background)
       map(map_x, map_y, 0, 0, 16, 16)
-      self.player:draw()
       self.finish_door:draw()
-      self.dialog_post:update()
+      self.dialog_post:draw()
+      self.player:draw()
     end
   }
 end
@@ -88,38 +89,22 @@ end
 -- start position is based on the 16 by 16 map 
 level_start_state = {
   {
-    x = 2,
-    y = 11,
     dialog = 1,
-    heart_x = 15,
-    heart_y = 11,
     teleport = false,
     clone = false,
     background = 0,
   },
   {
-    x = 1,
-    y = 11,
-    heart_x = 15,
-    heart_y = 3,
     teleport = true,
     clone = false,
     background = 0,
   },
   {
-    x = 1,
-    y = 7,
-    heart_x = 13,
-    heart_y = 8,
     teleport = true,
     clone = false,
     background = 0,
   },
   {
-    x = 32,
-    y = 13,
-    heart_x = 45,
-    heart_y = 13,
     teleport = true,
     clone = false,
     background = 0,

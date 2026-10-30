@@ -6,6 +6,7 @@ function plinit()
     dy = 0,
     flx = true,
     grounded = false,
+    can_jump = true,
     active_orb = 1,
     -- animation values
     state = character_animstate.idle,
@@ -52,7 +53,7 @@ function plinit()
           self.orbs[self.active_orb]:use(self)
         end
       end
-      if btn(5) and self.grounded then -- jump
+      if btn(5) and self.grounded and self.can_jump then -- jump
         self.dy = jump_speed
         self.grounded = false
       end

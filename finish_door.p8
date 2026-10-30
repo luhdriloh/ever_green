@@ -5,7 +5,6 @@ function finish_door_init(player, advance_level_callback)
     x = -20,
     y = -20,
     sp = 11,
-    step = 0,
     player = player,
     advance_level_callback = advance_level_callback,
 
@@ -27,12 +26,3 @@ function finish_door_init(player, advance_level_callback)
     end
   }
 end
-
--- states
--- heart_animstate = {
---   idle = {
---     name = "idle",
---     start = 11,
---     per_frame = 0
---   }
--- }
