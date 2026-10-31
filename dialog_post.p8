@@ -7,8 +7,8 @@ function dialog_post_init(player)
     player = player,
     dialog_counter = 1,
     dialog_text = {
-      "hello how are you doing today, mr ever_green person dude hahahahahhahahahahah adsfasdjkfkjasdfsadfasdfasdfsdafsadfsadfssadfsdaf adsf",
-      "sup",
+      "wake up... wake up please",
+      "sup"
     },
 
     level_set = function(self, x, y, dialog_counter)
