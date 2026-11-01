@@ -1,37 +1,34 @@
-function platform_init(player, x, y, platform_data)
+function platform_init(player, x, y, properties)
     return {
       x = x * 8,
       y = y * 8,
-      velocity = 1,
+      velocity = -1,
       start_pos = { x=x*8, y=y*8 },
       riders = {}, -- list of objects standing on this platform
-      platform_data = platform_data,
-      activated = true,
+      properties = properties,
+      active = false,
 
       update = function(self)
-        if self.activated != true then
-          return
-        end
+        self.velocity = self.active and 1 or -1
 
         -- compute the new position
         local old_x, old_y = self.x, self.y
-        self.x += self.velocity * self.platform_data.dx
-        self.y += self.velocity * self.platform_data.dy
+        self.x += self.velocity * self.properties.dx
+        self.y += self.velocity * self.properties.dy
 
         -- see if we've hit any platform stops 
         -- collision checks
         local collide = check_collision(self, platform_stop_flag, 0, 0, 7, 7)
           or check_collision(self, solid_flag, 0, 0, 7, 7)
         if collide then
-          self.velocity = 0
           self.x, self.y = old_x, old_y
         end
 
         -- carry riders 
-        for r in all(self.riders) do
-          r.x += self.velocity * platform_data.dx
-          r.y += self.velocity * platform_data.dy
-        end
+        -- for r in all(self.riders) do
+        --   r.x += self.velocity * properties.dx
+        --   r.y += self.velocity * properties.dy
+        -- end
 
       end,
 
@@ -60,7 +57,7 @@ function platform_init(player, x, y, platform_data)
     end,
 
     draw = function(self)
-      spr(self.platform_data.sp, self.x, self.y)
+      spr(self.properties.sp, self.x, self.y)
     end
   }
 end

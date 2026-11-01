@@ -42,6 +42,7 @@ function level_manager()
       end
 
       -- cleanup
+      self.buttons = {}
       self.platforms = {}
       self.dialog_post:level_set(-20, -20)
 
@@ -72,6 +73,9 @@ function level_manager()
           elseif platform_sprite_to_direction[sprite_num] then
             mset(x_coord, y_coord, 0)
             add(self.platforms, platform_init(self.player, x, y, platform_sprite_to_direction[sprite_num]))
+          elseif button_info[sprite_num] then
+            mset(x_coord, y_coord, 0)
+            add(self.buttons, button_init(self.player, x, y, self.platforms, button_info[sprite_num]))
           end
 
         end
@@ -87,6 +91,11 @@ function level_manager()
       for platform in all(self.platforms) do
         platform:update()
       end
+
+      for button in all(self.buttons) do
+        button:update()
+      end
+
       self.player:update()
       self.finish_door:update()
       self.dialog_post:update()
@@ -98,6 +107,11 @@ function level_manager()
       for platform in all(self.platforms) do
         platform:draw()
       end
+
+      for button in all(self.buttons) do
+        button:draw()
+      end
+
       self.finish_door:draw()
       self.dialog_post:draw()
       self.player:draw()

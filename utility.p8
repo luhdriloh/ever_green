@@ -24,17 +24,9 @@ finish_door_flag_val = 6
 blue_button_flag_val = 2
 red_button_flag_val = 4
 
-left_red_platform_flag_val = 3 + 24
-up_red_platform_flag_val = 3 + 8
-right_red_platform_flag_val = 3
-down_red_platform_flag_val = 3 + 16
-
-left_blue_platform_flag_val = 5 + 24
-up_blue_platform_flag_val = 5 + 8
-right_blue_platform_flag_val = 5
-down_blue_platform_flag_val = 5 + 16
-
 -- map values
+-- map_x and map_y == TILE SPACE == 1 tile is 8 PIXELS
+-- TODO: rename these
 map_x = 0
 map_x_offset = 0
 map_y = 0
@@ -57,6 +49,11 @@ platform_sprite_to_direction[52] = { dx=1, dy=0, color=red, sp=52 }
 
 platform_sprite_to_direction[37] = { dx=-0, dy=1, color=blue, sp=37 }
 platform_sprite_to_direction[53] = { dx=-0, dy=1, color=red, sp=53 }
+
+-- button info
+button_info = {}
+button_info[48] = { sp=48, color=red }
+button_info[32] = { sp=32, color=blue }
 
 -- dynamically created sprites that we want to be solid
 solid_spr = {}
@@ -111,10 +108,15 @@ function apply_gravity_2(o)
   o.dy = min(o.dy + dyupdate, max_dy)
   o.y = o.y + o.dy
 
+  -- x1_offset = x1_offset or 0
+  -- y1_offset = y1_offset or 2
+  -- x2_offset = x2_offset or 7
+  -- y2_offset = y2_offset or 7
+  
   local y_dynamic_hit = false
   local y_map_hit = check_collision(o, solid_flag)
   for platform in all(o.platforms) do
-    if check_dynamic_collisions(o, platform) then
+    if check_dynamic_collisions(o, platform, 0, 1, 7, 8) then
       y_dynamic_hit = true
       break
     end
@@ -135,7 +137,7 @@ function apply_gravity_2(o)
     -- snap to dynamic platform top if dynamic
     for platform in all(o.platforms) do
       if check_dynamically_grounded(o, platform) then
-        platform:attach(o)
+        -- platform:attach(o)
         o.y = platform.y - 8 -- to take account of the placement of the character sprite 8x8/
         break
       end
@@ -151,7 +153,7 @@ end
 function check_character_grounded(o)
   local dynamically_grounded = false
   for platform in all(o.platforms) do
-    dynamically_grounded = check_dynamically_grounded(o, platform)
+    dynamically_grounded = check_dynamically_grounded(o, platform) -- update bounds here!!!! todo
   end
   
   return check_grounded(o.x + map_x_offset, o.y + map_y_offset) or dynamically_grounded
@@ -208,9 +210,9 @@ function check_dynamic_collisions(o, o2, x1_offset, y1_offset, x2_offset, y2_off
   local y = o.y + map_y_offset
 
   -- player hitbox (subset of the 8x8 sprite)
-  x1_offset = x1_offset or 1
+  x1_offset = x1_offset or 0
   y1_offset = y1_offset or 2
-  x2_offset = x2_offset or 6
+  x2_offset = x2_offset or 7
   y2_offset = y2_offset or 7
 
   local left1   = x + x1_offset
@@ -234,7 +236,7 @@ function check_dynamically_grounded(o, o2, x1_offset, x2_offset, y2_offset)
   local x2 = o2.x + map_x_offset
   local y2 = o2.y + map_y_offset
 
-  x1_offset = x1_offset or 1
+  x1_offset = x1_offset or 0
   x2_offset = x2_offset or 7
   y2_offset = y2_offset or 7
 
@@ -242,7 +244,7 @@ function check_dynamically_grounded(o, o2, x1_offset, x2_offset, y2_offset)
   local bottom1 = y + y2_offset
   local top2 = y2
 
-  if top2 > bottom1 + 1 or top2 < bottom1 - 6 then
+  if top2 > bottom1 or top2 < bottom1 - 6 then
     return false
   end
 
