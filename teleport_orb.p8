@@ -1,8 +1,11 @@
-function teleport_orb_init(xpos, ypos)
+function teleport_orb_init(x, y, platforms)
   return {
-    x = xpos,
-    y = ypos,
-    sp = 13,
+    x = x * 8,
+    y = y * 8,
+    grounded = false,
+    platforms = platforms,
+    dy = 0,
+    sp = 14,
     inuse = false,
 
     use = function(self, o)
@@ -19,16 +22,20 @@ function teleport_orb_init(xpos, ypos)
       o.y = self.y
     end,
 
-    set = function(self, xpos, ypos)
+    set = function(self, x, y)
       self.inuse = true
-      self.x = xpos
-      self.y = ypos
+      self.x = x
+      self.y = y
+    end,
+
+    update = function(self)
+      apply_gravity_2(self)
     end,
 
     draw = function(self)
       if (self.inuse) then
         spr(self.sp, self.x, self.y)
       end
-    end
+    end,
   }
 end

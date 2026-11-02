@@ -107,11 +107,6 @@ function apply_gravity_2(o)
   local old_y = o.y
   o.dy = min(o.dy + dyupdate, max_dy)
   o.y = o.y + o.dy
-
-  -- x1_offset = x1_offset or 0
-  -- y1_offset = y1_offset or 2
-  -- x2_offset = x2_offset or 7
-  -- y2_offset = y2_offset or 7
   
   local y_dynamic_hit = false
   local y_map_hit = check_collision(o, solid_flag)
@@ -137,7 +132,7 @@ function apply_gravity_2(o)
     -- snap to dynamic platform top if dynamic
     for platform in all(o.platforms) do
       if check_dynamically_grounded(o, platform) then
-        -- platform:attach(o)
+        platform:attach(o)
         o.y = platform.y - 8 -- to take account of the placement of the character sprite 8x8/
         break
       end
@@ -153,7 +148,11 @@ end
 function check_character_grounded(o)
   local dynamically_grounded = false
   for platform in all(o.platforms) do
-    dynamically_grounded = check_dynamically_grounded(o, platform) -- update bounds here!!!! todo
+    local grounded = check_dynamically_grounded(o, platform)
+    if grounded then
+      platform:attach(o)
+    end
+    dynamically_grounded = dynamically_grounded or grounded -- update bounds here!!!! todo
   end
   
   return check_grounded(o.x + map_x_offset, o.y + map_y_offset) or dynamically_grounded
@@ -208,6 +207,8 @@ end
 function check_dynamic_collisions(o, o2, x1_offset, y1_offset, x2_offset, y2_offset)
   local x = o.x + map_x_offset
   local y = o.y + map_y_offset
+  local x2 = o2.x + map_x_offset
+  local y2 = o2.y + map_y_offset
 
   -- player hitbox (subset of the 8x8 sprite)
   x1_offset = x1_offset or 0
@@ -221,10 +222,10 @@ function check_dynamic_collisions(o, o2, x1_offset, y1_offset, x2_offset, y2_off
   local bottom1 = y + y2_offset
 
   -- o2 is a full 8x8 sprite
-  local left2   = o2.x
-  local right2  = o2.x + 7
-  local top2    = o2.y
-  local bottom2 = o2.y + 7
+  local left2   = x2
+  local right2  = x2 + 7
+  local top2    = y2
+  local bottom2 = y2 + 7
 
   -- AABB overlap: all four conditions must be true
   return left1 < right2 and right1 > left2 and top1 < bottom2 and bottom1 > top2
@@ -238,7 +239,7 @@ function check_dynamically_grounded(o, o2, x1_offset, x2_offset, y2_offset)
 
   x1_offset = x1_offset or 0
   x2_offset = x2_offset or 7
-  y2_offset = y2_offset or 7
+  y2_offset = y2_offset or 8 -- 8 because we want to check that the block right below the character is grounded
 
   -- player's hitbox bottom edge
   local bottom1 = y + y2_offset

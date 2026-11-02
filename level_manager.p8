@@ -31,6 +31,12 @@ function level_manager()
     end,
 
     create_level = function(self)
+      -- cleanup
+      self.buttons = {}
+      self.platforms = {}
+      self.dialog_post:level_set(-20, -20)
+      self.teleport_orb = teleport_orb_init(0, 0, self.platforms)
+
       local level_data = level_start_state[self.level]
       local orbs = {}
       if level_data.teleport then
@@ -40,11 +46,6 @@ function level_manager()
       if level_data.clone then
         add(orbs, self.clone_orb)
       end
-
-      -- cleanup
-      self.buttons = {}
-      self.platforms = {}
-      self.dialog_post:level_set(-20, -20)
 
       -- Set map value 
       -- 8 Columns of levels in the map editor
@@ -72,7 +73,7 @@ function level_manager()
             self.dialog_post:level_set(x, y, level_data.dialog)
           elseif platform_sprite_to_direction[sprite_num] then
             mset(x_coord, y_coord, 0)
-            add(self.platforms, platform_init(self.player, x, y, platform_sprite_to_direction[sprite_num]))
+            add(self.platforms, platform_init(self.platforms, x, y, platform_sprite_to_direction[sprite_num]))
           elseif button_info[sprite_num] then
             mset(x_coord, y_coord, 0)
             add(self.buttons, button_init(self.player, x, y, self.platforms, button_info[sprite_num]))
@@ -88,15 +89,17 @@ function level_manager()
     end,
 
     update = function(self)
-      for platform in all(self.platforms) do
-        platform:update()
-      end
-
       for button in all(self.buttons) do
         button:update()
       end
 
       self.player:update()
+      self.teleport_orb:update()
+
+      for platform in all(self.platforms) do
+        platform:update()
+      end
+
       self.finish_door:update()
       self.dialog_post:update()
     end,
@@ -114,6 +117,7 @@ function level_manager()
 
       self.finish_door:draw()
       self.dialog_post:draw()
+      self.teleport_orb:draw()
       self.player:draw()
     end
   }
@@ -123,7 +127,7 @@ end
 level_start_state = {
   {
     dialog = 1,
-    teleport = false,
+    teleport = true,
     clone = false,
     background = 0,
   },
