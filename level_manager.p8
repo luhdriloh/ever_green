@@ -73,10 +73,10 @@ function level_manager()
             self.dialog_post:level_set(x, y, level_data.dialog)
           elseif platform_sprite_to_direction[sprite_num] then
             mset(x_coord, y_coord, 0)
-            add(self.platforms, platform_init(self.platforms, x, y, platform_sprite_to_direction[sprite_num]))
+            add(self.platforms, platform_init(self.player, self.platforms, x, y, platform_sprite_to_direction[sprite_num]))
           elseif button_info[sprite_num] then
             mset(x_coord, y_coord, 0)
-            add(self.buttons, button_init(self.player, x, y, self.platforms, button_info[sprite_num]))
+            add(self.buttons, button_init(self.player, self.platforms, x, y, button_info[sprite_num]))
           end
 
         end

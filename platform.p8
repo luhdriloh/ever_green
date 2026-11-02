@@ -1,9 +1,10 @@
-function platform_init(platforms, x, y, properties)
+function platform_init(player, platforms, x, y, properties)
     return {
       x = x * 8,
       y = y * 8,
       velocity = -1,
       start_pos = { x=x*8, y=y*8 },
+      player = player,
       riders = {}, -- list of objects standing on this platform
       platforms = platforms,
       properties = properties,
@@ -33,12 +34,25 @@ function platform_init(platforms, x, y, properties)
           self.x, self.y = old_x, old_y
         end
 
+        local player_collide = check_dynamic_collisions(self, self.player, 0, 0, 7, 7)
+        local already_riding = false
+        if player_collide then
+          for r in all(self.riders) do
+            already_riding = already_riding or r == self.player
+          end
+        end
+
         -- if we didn't move then we don't need to move the riders
         if old_x != self.x or old_y != self.y then
           -- carry riders 
           for r in all(self.riders) do
             r.x += self.velocity * self.properties.dx
             r.y += self.velocity * self.properties.dy
+          end
+
+          if player_collide and already_riding == false then
+            self.player.x += self.velocity * self.properties.dx
+            self.player.y += self.velocity * self.properties.dy
           end
         end
 

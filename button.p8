@@ -1,4 +1,4 @@
-function button_init(player, x, y, platforms, button_properties)
+function button_init(player, platforms, x, y, button_properties)
 		return {
 			x = x * 8,
       y = y * 8,
