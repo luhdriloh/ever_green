@@ -11,6 +11,8 @@ function platform_init(player, platforms, x, y, properties)
       active = false,
 
       update = function(self)
+        if self.y > 31 and self.y <= 34 then
+        end
         self.velocity = self.active and 1 or -1
 
         -- compute the new position
@@ -22,17 +24,20 @@ function platform_init(player, platforms, x, y, properties)
         -- collision checks
         local collide = check_collision(self, platform_stop_flag, 0, 0, 7, 7)
           or check_collision(self, solid_flag, 0, 0, 7, 7)
-
-        -- add dynamic collisions. For other platforms OR the player
-        for platform in all(self.platforms) do
-          if platform != self then
-            collide = collide or check_dynamic_collisions(self, platform, -1, -1, 8, 8)
-          end
-        end
-
+        
         if collide then
           self.x, self.y = old_x, old_y
         end
+
+        -- check dynamic collisions with other platforms 
+        for platform in all(self.platforms) do
+          while check_dynamic_collisions(self, platform, 0, 0, 7, 7) and platform != self do
+            self.x -= self.velocity * self.properties.dx
+            self.y -= self.velocity * self.properties.dy
+          end
+        end
+
+
 
         local player_collide = check_dynamic_collisions(self, self.player, 0, 0, 7, 7)
         local already_riding = false

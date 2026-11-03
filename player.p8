@@ -9,6 +9,7 @@ function plinit()
     can_jump = true,
     active_orb = 1,
     platforms = {},
+    clone = false,
 
     -- animation values
     state = character_animstate.idle,
@@ -16,12 +17,13 @@ function plinit()
     step = 0,
     orbs = nil,
 
-    level_set = function(self, x, y, orbs, platforms)
-      self.x = x * 8
-      self.y = y * 8
+    level_set = function(self, x, y, orbs, platforms, clone, pixel_space)
+      self.x = pixel_space and x or x * 8
+      self.y = pixel_space and y or y * 8
       self.active_orb = 1
       self.orbs = orbs
       self.platforms = platforms
+      self.clone = clone or false
     end,
 
     update = function(self)
@@ -40,13 +42,16 @@ function plinit()
         self.dx = 0
       end
 
-      if btnp(3) then -- switch orbs
-      end
-      if btnp(4) then -- orb placement
-        if count(self.orbs) > 0 then
-          self.orbs[self.active_orb]:use(self)
+      if self.clone == false then
+        if btnp(3) then -- switch orbs
+        end
+        if btnp(4) then -- orb placement
+          if count(self.orbs) > 0 then
+            self.orbs[self.active_orb]:use(self)
+          end
         end
       end
+
       if btn(5) and self.grounded and self.can_jump then
         self.dy = jump_speed
         self.grounded = false
@@ -72,7 +77,9 @@ function plinit()
       end
 
       -- === Y PASS ===
+      -- todo: add a death anim if the player is smashed between 2 objects
       apply_gravity_2(self)
+      
 
       -- animation state
       if self.dy < 0 then
@@ -91,9 +98,6 @@ function plinit()
     end,
 
     draw = function(self)
-      if count(self.orbs) > 0 then
-        self.orbs[self.active_orb]:draw()
-      end
       spr(self.sp, self.x, self.y, 1, 1, self.flx)
     end
   }

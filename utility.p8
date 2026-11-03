@@ -228,7 +228,7 @@ function check_dynamic_collisions(o, o2, x1_offset, y1_offset, x2_offset, y2_off
   local bottom2 = y2 + 7
 
   -- AABB overlap: all four conditions must be true
-  return left1 < right2 and right1 > left2 and top1 < bottom2 and bottom1 > top2
+  return left1 <= right2 and right1 >= left2 and top1 <= bottom2 and bottom1 >= top2
 end
 
 function check_dynamically_grounded(o, o2, x1_offset, x2_offset, y2_offset)

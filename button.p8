@@ -1,8 +1,8 @@
-function button_init(player, platforms, x, y, button_properties)
+function button_init(players, platforms, x, y, button_properties)
 		return {
 			x = x * 8,
       y = y * 8,
-			player = player,
+			players = players,
 			platforms = platforms,
 			button_properties = button_properties,
 			active = false,
@@ -11,7 +11,11 @@ function button_init(player, platforms, x, y, button_properties)
 				-- check if the user has pressed the button_properties
 				-- check the feet location
 				local old_active = self.active
-				self.active = check_dynamic_collisions(self.player, self, 2, -2, 5, 0) and true or false
+				self.active = false
+
+				for player in all(self.players) do
+					self.active = self.active or check_dynamic_collisions(player, self, 3, -2, 4, 0)
+				end
 
 				if old_active != self.active then
 					self:set_platforms(self.active)

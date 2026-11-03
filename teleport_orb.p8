@@ -5,27 +5,27 @@ function teleport_orb_init(x, y, platforms)
     grounded = false,
     platforms = platforms,
     dy = 0,
-    sp = 14,
-    inuse = false,
+    sp = 13,
+    placed = false,
+
+    set = function(self, x, y)
+      self.placed = true
+      self.x = x
+      self.y = y
+    end,
 
     use = function(self, o)
-      if not self.inuse then
+      if not self.placed then
         self:set(o.x, o.y)
-      elseif self.inuse then
+      elseif self.placed then
         self:transport(o)
       end
     end,
 
     transport = function(self, o)
-      self.inuse = false
+      self.placed = false
       o.x = self.x
       o.y = self.y
-    end,
-
-    set = function(self, x, y)
-      self.inuse = true
-      self.x = x
-      self.y = y
     end,
 
     update = function(self)
@@ -33,7 +33,7 @@ function teleport_orb_init(x, y, platforms)
     end,
 
     draw = function(self)
-      if (self.inuse) then
+      if (self.placed) then
         spr(self.sp, self.x, self.y)
       end
     end,

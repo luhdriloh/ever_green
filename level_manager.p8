@@ -19,8 +19,8 @@ function level_manager()
       self.player = plinit()
       self.finish_door = finish_door_init(self.player, function() self:advance_level() end)
       self.dialog_post = dialog_post_init(self.player)
-      self.teleport_orb = teleport_orb_init(0, 0)
-      self.clone_orb = teleport_orb_init(0, 0)
+      self.teleport_orb = nil
+      self.clone_orb = nil
       self.platforms = {}
       self.buttons = {}
     end,
@@ -36,6 +36,7 @@ function level_manager()
       self.platforms = {}
       self.dialog_post:level_set(-20, -20)
       self.teleport_orb = teleport_orb_init(0, 0, self.platforms)
+      self.clone_orb = clone_orb_init(0, 0, self.platforms)
 
       local level_data = level_start_state[self.level]
       local orbs = {}
@@ -76,7 +77,7 @@ function level_manager()
             add(self.platforms, platform_init(self.player, self.platforms, x, y, platform_sprite_to_direction[sprite_num]))
           elseif button_info[sprite_num] then
             mset(x_coord, y_coord, 0)
-            add(self.buttons, button_init(self.player, self.platforms, x, y, button_info[sprite_num]))
+            add(self.buttons, button_init({self.player, self.clone_orb.clone}, self.platforms, x, y, button_info[sprite_num]))
           end
 
         end
@@ -95,6 +96,7 @@ function level_manager()
 
       self.player:update()
       self.teleport_orb:update()
+      self.clone_orb:update()
 
       for platform in all(self.platforms) do
         platform:update()
@@ -106,7 +108,7 @@ function level_manager()
 
     draw = function(self)
       cls(self.background)
-      map(map_x, map_y, 0, 0, 16, 16)
+      map(map_x, map_y, 0, 0, 16, 16, 147)
       for platform in all(self.platforms) do
         platform:draw()
       end
@@ -118,7 +120,9 @@ function level_manager()
       self.finish_door:draw()
       self.dialog_post:draw()
       self.teleport_orb:draw()
+      self.clone_orb:draw()
       self.player:draw()
+      map(map_x, map_y, 0, 0, 16, 16, 8)
     end
   }
 end
@@ -127,12 +131,12 @@ end
 level_start_state = {
   {
     dialog = 1,
-    teleport = true,
+    teleport = false,
     clone = false,
     background = 0,
   },
   {
-    teleport = true,
+    teleport = false,
     clone = false,
     background = 0,
   },
