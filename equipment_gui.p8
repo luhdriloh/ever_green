@@ -3,7 +3,6 @@ function equipment_gui_init(orbs)
     x_start = 15,
     y_start = 0,
     outline_sp = 29,
-    frame = 0,
     orbs = {},
 
     set_orbs = function(self, orbs)
@@ -11,7 +10,6 @@ function equipment_gui_init(orbs)
     end,
 
     update = function(self)
-      self.frame += 1
     end,
 
     draw = function(self)
@@ -21,7 +19,7 @@ function equipment_gui_init(orbs)
       for orb in all(self.orbs) do
         spr(orb.sp, x, y)
         if orb.selected do
-          if self.frame % 30 < 15 then
+          if orb.placed or frame % 30 < 15 then
             spr(self.outline_sp, x, y)
           end
         end

@@ -92,6 +92,7 @@ function level_manager()
     end,
 
     update = function(self)
+      frame += 1
       for button in all(self.buttons) do
         button:update()
       end
@@ -141,7 +142,7 @@ level_start_state = {
   {
     dialog = 1,
     teleport_orbs = 2,
-    clone_orbs = 0,
+    clone_orbs = 1,
     background = 0,
   },
   {

@@ -6,6 +6,7 @@ function clone_orb_init(x, y, platforms)
     platforms = platforms,
     dy = 0,
     sp = 30,
+    outline_sp = 29,
     selected = false,
     placed = false,
     clone_active = false,
@@ -42,6 +43,9 @@ function clone_orb_init(x, y, platforms)
     draw = function(self)
       if self.placed then
         spr(self.sp, self.x, self.y)
+        if self.selected and frame % 30 < 15 then
+          spr(self.outline_sp, self.x, self.y)
+        end
       end
 
      if self.clone_active then

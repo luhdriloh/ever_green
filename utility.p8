@@ -8,6 +8,7 @@ step_per_frame = 3
 gravity = 12
 dyupdate = gravity / 30
 max_dy = 7
+frame = 0
 
 -- flags
 solid_flag = 0

@@ -6,6 +6,7 @@ function teleport_orb_init(x, y, platforms)
     platforms = platforms,
     dy = 0,
     sp = 13,
+    outline_sp = 29,
     selected = false,
     placed = false,
 
@@ -36,6 +37,9 @@ function teleport_orb_init(x, y, platforms)
     draw = function(self)
       if self.placed then
         spr(self.sp, self.x, self.y)
+        if self.selected and frame % 30 < 15 then
+          spr(self.outline_sp, self.x, self.y)
+        end
       end
     end,
   }

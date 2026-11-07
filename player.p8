@@ -26,7 +26,7 @@ function plinit()
       self.platforms = platforms
       self.clone = clone or false
 
-      if count(self.orbs) > 0 do
+      if self.clone == false and count(self.orbs) > 0 do
         self.orbs[1].selected = true
       end
     end,
@@ -49,6 +49,12 @@ function plinit()
 
       if self.clone == false then
         if btnp(3) then -- switch orbs
+          local orb_count = count(self.orbs)
+          if orb_count > 0 then
+            self.orbs[self.active_orb].selected = false
+            self.active_orb = 1 + ((self.active_orb) % orb_count)
+            self.orbs[self.active_orb].selected = true
+          end
         end
         if btnp(4) then -- orb placement
           if count(self.orbs) > 0 then
