@@ -6,6 +6,7 @@ function clone_orb_init(x, y, platforms)
     platforms = platforms,
     dy = 0,
     sp = 30,
+    selected = false,
     placed = false,
     clone_active = false,
     clone = plinit(),

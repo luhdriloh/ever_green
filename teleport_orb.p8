@@ -6,6 +6,7 @@ function teleport_orb_init(x, y, platforms)
     platforms = platforms,
     dy = 0,
     sp = 13,
+    selected = false,
     placed = false,
 
     set = function(self, x, y)
@@ -33,7 +34,7 @@ function teleport_orb_init(x, y, platforms)
     end,
 
     draw = function(self)
-      if (self.placed) then
+      if self.placed then
         spr(self.sp, self.x, self.y)
       end
     end,

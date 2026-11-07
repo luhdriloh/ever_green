@@ -6,4 +6,6 @@ This is my list of things to do
 * twinkling stars
 * wind
 * grass
+* create bad guys or obstacles that can kill you
+* refactor
 

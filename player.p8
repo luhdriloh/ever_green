@@ -6,6 +6,7 @@ function plinit()
     dy = 0,
     flx = true,
     grounded = false,
+    on_platform = false,
     can_jump = true,
     active_orb = 1,
     platforms = {},
@@ -24,6 +25,10 @@ function plinit()
       self.orbs = orbs
       self.platforms = platforms
       self.clone = clone or false
+
+      if count(self.orbs) > 0 do
+        self.orbs[1].selected = true
+      end
     end,
 
     update = function(self)

@@ -111,7 +111,7 @@ function apply_gravity_2(o)
   local y_dynamic_hit = false
   local y_map_hit = check_collision(o, solid_flag)
   for platform in all(o.platforms) do
-    if check_dynamic_collisions(o, platform, 0, 1, 7, 8) then
+    if check_dynamic_collisions(o, platform) then
       y_dynamic_hit = true
       break
     end
@@ -192,6 +192,7 @@ function check_collision(o, flag_type, x1_offset, y1_offset, x2_offset, y2_offse
   local x2 = (x + x2_offset) / 8
   local y2 = (y + y2_offset) / 8
 
+  -- todo: use bitwise operations to check for multiple kinds of flags
   local a = fget(mget(x1, y1), flag_type)
   local c = fget(mget(x2, y1), flag_type)
   local d = fget(mget(x2, y2), flag_type)
@@ -211,9 +212,9 @@ function check_dynamic_collisions(o, o2, x1_offset, y1_offset, x2_offset, y2_off
   local y2 = o2.y + map_y_offset
 
   -- player hitbox (subset of the 8x8 sprite)
-  x1_offset = x1_offset or 0
+  x1_offset = x1_offset or 1
   y1_offset = y1_offset or 2
-  x2_offset = x2_offset or 7
+  x2_offset = x2_offset or 6
   y2_offset = y2_offset or 7
 
   local left1   = x + x1_offset
@@ -237,8 +238,8 @@ function check_dynamically_grounded(o, o2, x1_offset, x2_offset, y2_offset)
   local x2 = o2.x + map_x_offset
   local y2 = o2.y + map_y_offset
 
-  x1_offset = x1_offset or 0
-  x2_offset = x2_offset or 7
+  x1_offset = x1_offset or 1
+  x2_offset = x2_offset or 6
   y2_offset = y2_offset or 8 -- 8 because we want to check that the block right below the character is grounded
 
   -- player's hitbox bottom edge
@@ -255,5 +256,5 @@ function check_dynamically_grounded(o, o2, x1_offset, x2_offset, y2_offset)
   local left2  = x2
   local right2 = x2 + 7
 
-  return left1 < right2 and right1 > left2
+  return left1 <= right2 and right1 >= left2
 end
