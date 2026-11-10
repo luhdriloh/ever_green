@@ -7,7 +7,7 @@ function dialog_post_init(player)
     player = player,
     dialog_counter = 1,
     dialog_text = {
-      "wake up... wake up please",
+      "did you see the platform move! try standing on the blue button over there to see if anything happens!",
       "sup"
     },
 

@@ -107,7 +107,13 @@ function platform_init(player, platforms, x, y, properties)
     end,
 
     draw = function(self)
-      spr(self.properties.sp, self.x, self.y)
+      if self.active then
+        pal(7, self.properties.color)
+        spr(self.properties.sp, self.x, self.y)
+        pal()
+      else
+        spr(self.properties.sp, self.x, self.y)
+      end
     end,
   }
 end

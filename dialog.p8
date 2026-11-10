@@ -23,7 +23,7 @@ function dialog(d)
   -- defaults
   _d = {
     a = true,
-    bg = 5,
+    bg = 1,
     c = false,
     dl = 5,
     fg = 7,
@@ -45,19 +45,28 @@ function dialog(d)
   _wi = _d.w - (_d.p * 2)
   _wrap = (_wi / 4) - 1 -- 27
 
-  local lines = {}
-  local limit = ceil(#_d.txt / _wrap)
-  local _tb = _d.txt
-  while limit > 0 do
-    local substr = sub(_tb, 1, _wrap) -- grab first bit
-    -- ensure line doesn't have a space at the start
-    if sub(substr,1,1) == " " then
-      substr = sub(substr, 2)
+local lines = {}
+local _tb = _d.txt
+while #_tb > 0 do
+  if #_tb <= _wrap then
+    add(lines, _tb)
+    break
+  end
+  -- find the last space within _wrap
+  local brk = 0
+  for i = _wrap, 1, -1 do
+    if sub(_tb, i, i) == " " then
+      brk = i
+      break
     end
-    add(lines, substr) -- stick it in our lines table
-    _tb = sub(_tb, _wrap + 1, -1) -- get rest of text
-    limit -= 1
-  end -- endwhile
+  end
+  if brk == 0 then
+    -- no space found, hard break
+    brk = _wrap
+  end
+  add(lines, sub(_tb, 1, brk))
+  _tb = sub(_tb, brk + 1, -1)
+end
 
   -- lines limit
   _ll = flr((_d.h - _d.p - _ch) / _ch)

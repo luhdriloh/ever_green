@@ -6,7 +6,7 @@ function teleport_orb_init(x, y, platforms)
     platforms = platforms,
     dy = 0,
     sp = 13,
-    outline_sp = 29,
+    pointer_sp = 21,
     selected = false,
     placed = false,
 
@@ -38,7 +38,7 @@ function teleport_orb_init(x, y, platforms)
       if self.placed then
         spr(self.sp, self.x, self.y)
         if self.selected and frame % 30 < 15 then
-          spr(self.outline_sp, self.x, self.y)
+          spr(self.pointer_sp, self.x, self.y - 4)
         end
       end
     end,

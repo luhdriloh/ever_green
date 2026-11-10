@@ -6,7 +6,7 @@ function clone_orb_init(x, y, platforms)
     platforms = platforms,
     dy = 0,
     sp = 30,
-    outline_sp = 29,
+    pointer_sp = 21,
     selected = false,
     placed = false,
     clone_active = false,
@@ -44,11 +44,14 @@ function clone_orb_init(x, y, platforms)
       if self.placed then
         spr(self.sp, self.x, self.y)
         if self.selected and frame % 30 < 15 then
-          spr(self.outline_sp, self.x, self.y)
+          spr(self.pointer_sp, self.x, self.y - 4)
         end
       end
 
      if self.clone_active then
+      if self.selected and frame % 30 < 15 then
+        spr(self.pointer_sp, self.clone.x, self.clone.y - 4)
+      end
         -- pal(1, 6)
         -- pal(5,1)
         -- pal(7, 5)

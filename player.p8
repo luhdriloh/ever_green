@@ -11,6 +11,7 @@ function plinit()
     active_orb = 1,
     platforms = {},
     clone = false,
+    switch_orbs = 0,
 
     -- animation values
     state = character_animstate.idle,
@@ -48,9 +49,11 @@ function plinit()
       end
 
       if self.clone == false then
-        if btnp(3) then -- switch orbs
+        if btnp(3) and self.grounded then -- switch orbs
           local orb_count = count(self.orbs)
           if orb_count > 0 then
+            frame = 0
+            self.switch_orbs = 3
             self.orbs[self.active_orb].selected = false
             self.active_orb = 1 + ((self.active_orb) % orb_count)
             self.orbs[self.active_orb].selected = true
@@ -106,6 +109,10 @@ function plinit()
       end
 
       update_frame(self, self.state)
+      if self.switch_orbs > 0 then
+        self.sp = 18
+        self.switch_orbs -= 1
+      end
     end,
 
     draw = function(self)
