@@ -13,8 +13,6 @@ function platform_init(player, platforms, x, y, properties)
       active = false,
 
       update = function(self)
-        if self.y > 31 and self.y <= 34 then
-        end
         self.velocity = self.active and 1 or -1
 
         -- compute the new position
@@ -107,7 +105,7 @@ function platform_init(player, platforms, x, y, properties)
     end,
 
     draw = function(self)
-      if self.active then
+      if self.old_x != self.x or self.old_y != self.y then
         pal(7, self.properties.color)
         spr(self.properties.sp, self.x, self.y)
         pal()

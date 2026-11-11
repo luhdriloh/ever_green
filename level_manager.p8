@@ -141,12 +141,12 @@ end
 level_start_state = {
   {
     dialog = 1,
-    teleport_orbs = 2,
-    clone_orbs = 1,
+    teleport_orbs = 0,
+    clone_orbs = 0,
     background = 0,
   },
   {
-    teleport_orbs = 1,
+    teleport_orbs = 0,
     clone_orbs = 0,
     background = 0,
   },
@@ -165,7 +165,12 @@ level_start_state = {
     clone_orbs = 0,
     background = 0,
   },
-    {
+  {
+    teleport_orbs = 1,
+    clone_orbs = 0,
+    background = 0,
+  },
+  {
     teleport_orbs = 1,
     clone_orbs = 0,
     background = 0,

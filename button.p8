@@ -28,10 +28,17 @@ function button_init(players, platforms, x, y, button_properties)
 			end,
 
 			set_platforms = function(self, active)
+				if self.button_properties.color == white and active == false then
+					return
+				end
 				-- set platforms of the same color to the appropriate state
 				for platform in all(self.platforms) do
 					if platform.properties.color == self.button_properties.color then
-						platform.active = active
+						if platform.properties.color == white then
+							platform.active = not platform.active
+						else
+							platform.active = active
+						end
 					end
 				end
 			end

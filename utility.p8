@@ -34,8 +34,9 @@ map_y = 0
 map_y_offset = 0
 
 -- map platform color to activated color
-blue = 12
 red = 8
+blue = 12
+white = 1
 
 -- map platform sprite -> direction
 platform_sprite_to_direction = {}
@@ -51,10 +52,16 @@ platform_sprite_to_direction[52] = { dx=1, dy=0, color=red, sp=52 }
 platform_sprite_to_direction[37] = { dx=-0, dy=1, color=blue, sp=37 }
 platform_sprite_to_direction[53] = { dx=-0, dy=1, color=red, sp=53 }
 
+-- white platforms
+platform_sprite_to_direction[112] = { dx=-1, dy=0, color=white, sp=112 }
+platform_sprite_to_direction[113] = { dx=-0, dy=1, color=white, sp=113 }
+
+
 -- button info
 button_info = {}
 button_info[48] = { sp=48, color=red }
 button_info[32] = { sp=32, color=blue }
+button_info[96] = { sp=96, color=white }
 
 -- dynamically created sprites that we want to be solid
 solid_spr = {}
@@ -160,7 +167,7 @@ function check_character_grounded(o)
 end
 
 function check_grounded(x, y)
-  local x1 = (x + 1) / 8
+  local x1 = (x + 2) / 8
   local x2 = (x + 6) / 8
   local y2 = (y + 8) / 8
   local a = fget(mget(x1, y2), solid_flag)
