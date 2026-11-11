@@ -13,13 +13,13 @@ function level_manager()
     platforms = nil,
     buttons = nil,
     background = 1,
-    level = 1,
+    level = 13,
 
     init = function(self)
       self.player = plinit()
       self.finish_door = finish_door_init(self.player, function() self:advance_level() end)
       self.dialog_post = dialog_post_init(self.player)
-      self.equipment_gui = equipment_gui_init(self.orbs)
+      self.equipment_gui = equipment_gui_init(self.orbs, self.player)
     end,
 
     advance_level = function(self)
@@ -56,7 +56,7 @@ function level_manager()
       map_y = flr((self.level - 1) / 8) * 16
       map_y_offset = map_y * 8
 
-      self.equipment_gui:set_orbs(self.orbs)
+      self.equipment_gui:level_set(self.orbs, self.player)
 
       -- loop through the map space to see if we find any flags that we need to spawn
       for x=0, 15 do
@@ -125,13 +125,12 @@ function level_manager()
 
       self.finish_door:draw()
       self.dialog_post:draw()
-      self.equipment_gui:draw()
+      self.player:draw()
 
       for orb in all(self.orbs) do
         orb:draw()
       end
-
-      self.player:draw()
+      self.equipment_gui:draw()
       map(map_x, map_y, 0, 0, 16, 16, 8)
     end
   }
@@ -141,37 +140,94 @@ end
 level_start_state = {
   {
     dialog = 1,
+    teleport_orbs = 1,
+    clone_orbs = 0,
+    background = 0,
+  },
+  {
     teleport_orbs = 0,
     clone_orbs = 0,
     background = 0,
   },
   {
+    teleport_orbs = 1,
+    clone_orbs = 0,
+    background = 0,
+  },
+  {
+    teleport_orbs = 1,
+    clone_orbs = 0,
+    background = 0,
+  },
+  {
+    teleport_orbs = 1,
+    clone_orbs = 0,
+    background = 0,
+  },
+  {
+    teleport_orbs = 1,
+    clone_orbs = 0,
+    background = 0,
+  },
+  {
+    teleport_orbs = 1,
+    clone_orbs = 0,
+    background = 0,
+  },
+  {
+    teleport_orbs = 1,
+    clone_orbs = 0,
+    background = 0,
+  },
+  {
+    teleport_orbs = 2,
+    clone_orbs = 0,
+    background = 0,
+  },
+  { -- 10
+    teleport_orbs = 2,
+    clone_orbs = 0,
+    background = 0,
+  },
+  { -- 11
+    teleport_orbs = 2,
+    clone_orbs = 0,
+    background = 0,
+  },
+  { -- 12
+    dialog = 3,
+    teleport_orbs = 0,
+    clone_orbs = 1,
+    background = 0,
+  },
+  { -- 13
+    dialog = 4,
+    teleport_orbs = 0,
+    clone_orbs = 2,
+    background = 0,
+  },
+  { -- 14
     teleport_orbs = 0,
     clone_orbs = 0,
     background = 0,
   },
-  {
-    teleport_orbs = 1,
+  { -- 15
+    teleport_orbs = 0,
     clone_orbs = 0,
     background = 0,
   },
-  {
-    teleport_orbs = 1,
+  { -- 16
+    teleport_orbs = 0,
     clone_orbs = 0,
     background = 0,
   },
-  {
-    teleport_orbs = 1,
+  { -- 17
+    teleport_orbs = 0,
     clone_orbs = 0,
     background = 0,
   },
-  {
-    teleport_orbs = 1,
-    clone_orbs = 0,
-    background = 0,
-  },
-  {
-    teleport_orbs = 1,
+  { -- 18
+    teleport_orbs = 0,
     clone_orbs = 0,
     background = 0,
   },

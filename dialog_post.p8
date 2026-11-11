@@ -7,8 +7,10 @@ function dialog_post_init(player)
     player = player,
     dialog_counter = 1,
     dialog_text = {
-      "did you see the platform move! try standing on the blue button over there to see if anything happens!",
-      "sup"
+      "did you see the platform move! try standing on the blue button to see if anything happens!",
+      "this is tricky, how are you going to get up there? let me help you",
+      "here, take one of my clone orbs to help you out! you can create a clone of yourself by toggling the orb twice! toggle it a third time to deactivate it. try it!",
+      "i think you're going to need another clone orb for this one, take another!",
     },
 
     level_set = function(self, x, y, dialog_counter)

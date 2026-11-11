@@ -35,9 +35,9 @@ function button_init(players, platforms, x, y, button_properties)
 				for platform in all(self.platforms) do
 					if platform.properties.color == self.button_properties.color then
 						if platform.properties.color == white then
-							platform.active = not platform.active
+							platform:activate(not platform.active)
 						else
-							platform.active = active
+							platform:activate(active)
 						end
 					end
 				end

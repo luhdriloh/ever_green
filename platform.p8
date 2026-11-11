@@ -11,9 +11,19 @@ function platform_init(player, platforms, x, y, properties)
       platforms = platforms,
       properties = properties,
       active = false,
+      still_frames = 4,
+
+      activate = function(self, state)
+        self.active = state
+        self.still_frames = 7
+      end,
 
       update = function(self)
         self.velocity = self.active and 1 or -1
+        self.still_frames -= 1
+
+        self.velocity = self.still_frames < 0 and self.velocity or 0
+
 
         -- compute the new position
         self.old_x, self.old_y = self.x, self.y
@@ -51,8 +61,6 @@ function platform_init(player, platforms, x, y, properties)
           end
         end
 
-
-
         local player_collide = check_dynamic_collisions(self, self.player, 0, 0, 7, 7)
         local already_riding = false
         if player_collide then
@@ -69,7 +77,7 @@ function platform_init(player, platforms, x, y, properties)
             r.y += self.velocity * self.properties.dy
           end
 
-          if player_collide and already_riding == false then
+          if player_collide and already_riding == false and not self.player.grounded then
             self.player.x += self.velocity * self.properties.dx
             self.player.y += self.velocity * self.properties.dy
           end

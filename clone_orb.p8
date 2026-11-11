@@ -14,6 +14,8 @@ function clone_orb_init(x, y, platforms)
 
     use = function(self, o)
       if self.clone_active then
+        self.clone.x = -1
+        self.clone.y = -1
         self.clone_active = false
       elseif not self.placed then
         self.placed = true

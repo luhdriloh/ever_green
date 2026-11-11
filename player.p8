@@ -11,7 +11,7 @@ function plinit()
     active_orb = 1,
     platforms = {},
     clone = false,
-    switch_orbs = 0,
+    switch_orbs = 0, -- keeps track of the switch orb animation 3 frames long
 
     -- animation values
     state = character_animstate.idle,

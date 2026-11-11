@@ -55,6 +55,8 @@ platform_sprite_to_direction[53] = { dx=-0, dy=1, color=red, sp=53 }
 -- white platforms
 platform_sprite_to_direction[112] = { dx=-1, dy=0, color=white, sp=112 }
 platform_sprite_to_direction[113] = { dx=-0, dy=1, color=white, sp=113 }
+platform_sprite_to_direction[114] = { dx=1, dy=0, color=white, sp=114 }
+platform_sprite_to_direction[115] = { dx=-0, dy=-1, color=white, sp=115 }
 
 
 -- button info
@@ -62,17 +64,6 @@ button_info = {}
 button_info[48] = { sp=48, color=red }
 button_info[32] = { sp=32, color=blue }
 button_info[96] = { sp=96, color=white }
-
--- dynamically created sprites that we want to be solid
-solid_spr = {}
-solid_spr[34] = true
-solid_spr[35] = true
-solid_spr[36] = true
-solid_spr[37] = true
-solid_spr[50] = true
-solid_spr[51] = true
-solid_spr[52] = true
-solid_spr[53] = true
 
 function apply_gravity(o)
   if o.grounded then
@@ -167,7 +158,7 @@ function check_character_grounded(o)
 end
 
 function check_grounded(x, y)
-  local x1 = (x + 2) / 8
+  local x1 = (x + 1) / 8
   local x2 = (x + 6) / 8
   local y2 = (y + 8) / 8
   local a = fget(mget(x1, y2), solid_flag)
