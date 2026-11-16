@@ -17,6 +17,14 @@ function button_init(players, platforms, x, y, button_properties)
 					self.active = self.active or check_dynamic_collisions(player, self, 3, -2, 4, 0)
 				end
 
+				for platform in all(self.platforms) do
+					if check_dynamically_grounded(self, platform) then
+						platform:attach(self)
+						self.y = platform.y - 8 -- to take account of the placement of the character sprite 8x8/
+						break
+					end
+				end
+
 				if old_active != self.active then
 					self:set_platforms(self.active)
 				end
@@ -28,13 +36,13 @@ function button_init(players, platforms, x, y, button_properties)
 			end,
 
 			set_platforms = function(self, active)
-				if self.button_properties.color == white and active == false then
+				if self.button_properties.color == orange and active == false then
 					return
 				end
 				-- set platforms of the same color to the appropriate state
 				for platform in all(self.platforms) do
 					if platform.properties.color == self.button_properties.color then
-						if platform.properties.color == white then
+						if platform.properties.color == orange then
 							platform:activate(not platform.active)
 						else
 							platform:activate(active)

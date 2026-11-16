@@ -36,7 +36,7 @@ map_y_offset = 0
 -- map platform color to activated color
 red = 8
 blue = 12
-white = 1
+orange = 10
 
 -- map platform sprite -> direction
 platform_sprite_to_direction = {}
@@ -52,18 +52,18 @@ platform_sprite_to_direction[52] = { dx=1, dy=0, color=red, sp=52 }
 platform_sprite_to_direction[37] = { dx=-0, dy=1, color=blue, sp=37 }
 platform_sprite_to_direction[53] = { dx=-0, dy=1, color=red, sp=53 }
 
--- white platforms
-platform_sprite_to_direction[112] = { dx=-1, dy=0, color=white, sp=112 }
-platform_sprite_to_direction[113] = { dx=-0, dy=1, color=white, sp=113 }
-platform_sprite_to_direction[114] = { dx=1, dy=0, color=white, sp=114 }
-platform_sprite_to_direction[115] = { dx=-0, dy=-1, color=white, sp=115 }
+-- orange platforms
+platform_sprite_to_direction[112] = { dx=-1, dy=0, color=orange, sp=112 }
+platform_sprite_to_direction[113] = { dx=-0, dy=1, color=orange, sp=113 }
+platform_sprite_to_direction[114] = { dx=1, dy=0, color=orange, sp=114 }
+platform_sprite_to_direction[115] = { dx=-0, dy=-1, color=orange, sp=115 }
 
 
 -- button info
 button_info = {}
 button_info[48] = { sp=48, color=red }
 button_info[32] = { sp=32, color=blue }
-button_info[96] = { sp=96, color=white }
+button_info[96] = { sp=96, color=orange }
 
 function apply_gravity(o)
   if o.grounded then
@@ -158,8 +158,8 @@ function check_character_grounded(o)
 end
 
 function check_grounded(x, y)
-  local x1 = (x + 1) / 8
-  local x2 = (x + 6) / 8
+  local x1 = (x + 2) / 8
+  local x2 = (x + 5) / 8
   local y2 = (y + 8) / 8
   local a = fget(mget(x1, y2), solid_flag)
   local b = fget(mget(x2, y2), solid_flag)
@@ -181,9 +181,9 @@ function check_collision(o, flag_type, x1_offset, y1_offset, x2_offset, y2_offse
   local x = o.x + map_x_offset
   local y = o.y + map_y_offset
 
-  x1_offset = x1_offset or 1
+  x1_offset = x1_offset or 2
   y1_offset = y1_offset or 2
-  x2_offset = x2_offset or 6
+  x2_offset = x2_offset or 5
   y2_offset = y2_offset or 7
 
   local x1 = (x + x1_offset) / 8
@@ -211,9 +211,9 @@ function check_dynamic_collisions(o, o2, x1_offset, y1_offset, x2_offset, y2_off
   local y2 = o2.y + map_y_offset
 
   -- player hitbox (subset of the 8x8 sprite)
-  x1_offset = x1_offset or 1
+  x1_offset = x1_offset or 2
   y1_offset = y1_offset or 2
-  x2_offset = x2_offset or 6
+  x2_offset = x2_offset or 5
   y2_offset = y2_offset or 7
 
   local left1   = x + x1_offset
@@ -237,8 +237,8 @@ function check_dynamically_grounded(o, o2, x1_offset, x2_offset, y2_offset)
   local x2 = o2.x + map_x_offset
   local y2 = o2.y + map_y_offset
 
-  x1_offset = x1_offset or 1
-  x2_offset = x2_offset or 6
+  x1_offset = x1_offset or 2
+  x2_offset = x2_offset or 5
   y2_offset = y2_offset or 8 -- 8 because we want to check that the block right below the character is grounded
 
   -- player's hitbox bottom edge

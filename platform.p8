@@ -12,6 +12,7 @@ function platform_init(player, platforms, x, y, properties)
       properties = properties,
       active = false,
       still_frames = 4,
+      stop_hit = false,
 
       activate = function(self, state)
         self.active = state
@@ -41,8 +42,10 @@ function platform_init(player, platforms, x, y, properties)
         local collide = check_collision(self, platform_stop_flag, 0, 0, 7, 7)
           or check_collision(self, solid_flag, 0, 0, 7, 7)
         
+        self.stop_hit = false
         if collide then
           self.x, self.y = self.old_x, self.old_y
+          self.stop_hit = true
         end
         
         -- check dynamic collisions with other platforms 
@@ -113,7 +116,7 @@ function platform_init(player, platforms, x, y, properties)
     end,
 
     draw = function(self)
-      if self.old_x != self.x or self.old_y != self.y then
+      if self.active and self.properties.color != orange or self.properties.color == orange and self.stop_hit == false then
         pal(7, self.properties.color)
         spr(self.properties.sp, self.x, self.y)
         pal()

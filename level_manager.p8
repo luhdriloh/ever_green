@@ -7,19 +7,23 @@ function level_manager()
   return {
     player = nil,
     finish_door = nil,
-    dialog_post = nil,
+    dialog_posts = nil,
     orbs = nil,
     equipment_gui = nil,
     platforms = nil,
     buttons = nil,
     background = 1,
-    level = 13,
+    level = 4,
+    callbacks = {},
 
     init = function(self)
+      self.callbacks = {
+        function() self:add_teleport_orb() end
+      }
       self.player = plinit()
       self.finish_door = finish_door_init(self.player, function() self:advance_level() end)
-      self.dialog_post = dialog_post_init(self.player)
       self.equipment_gui = equipment_gui_init(self.orbs, self.player)
+      dtb_init(3)
     end,
 
     advance_level = function(self)
@@ -32,18 +36,18 @@ function level_manager()
       self.buttons = {}
       self.platforms = {}
       self.orbs = {}
-      self.dialog_post:level_set(-20, -20)
+      self.dialog_posts = {}
 
       local level_data = level_start_state[self.level]
 
       for i=1, level_data.teleport_orbs do
-        new_orb = teleport_orb_init(0, 0, self.platforms)
+        local new_orb = teleport_orb_init(0, 0, self.platforms)
         add(self.orbs, new_orb)
       end
 
       local players = { self.player }
       for i=1, level_data.clone_orbs do
-        new_orb = clone_orb_init(0, 0, self.platforms)
+        local new_orb = clone_orb_init(0, 0, self.platforms)
         add(players, new_orb.clone)
         add(self.orbs, new_orb)
       end
@@ -72,9 +76,12 @@ function level_manager()
           elseif player_flag_val == flag_val then
             mset(x_coord, y_coord, 0)
             self.player:level_set(x, y, self.orbs, self.platforms)
+          elseif dialog_post_flag_val == flag_val and sprite_num == 10 then
+            mset(x_coord, y_coord, 0)
+            add(self.dialog_posts, dialog_post_init(self.player, sprite_num, x, y, level_data.dialog))
           elseif dialog_post_flag_val == flag_val then
             mset(x_coord, y_coord, 0)
-            self.dialog_post:level_set(x, y, level_data.dialog)
+            add(self.dialog_posts, dialog_post_init(self.player, sprite_num, x, y, level_data.orb_dialog, self.callbacks[level_data.callback_index]))
           elseif platform_sprite_to_direction[sprite_num] then
             mset(x_coord, y_coord, 0)
             add(self.platforms, platform_init(self.player, self.platforms, x, y, platform_sprite_to_direction[sprite_num]))
@@ -107,9 +114,13 @@ function level_manager()
         platform:update()
       end
 
+      for dialog_post in all(self.dialog_posts) do
+        dialog_post:update()
+      end
+
       self.finish_door:update()
-      self.dialog_post:update()
       self.equipment_gui:update()
+      dtb_update()
     end,
 
     draw = function(self)
@@ -124,7 +135,11 @@ function level_manager()
       end
 
       self.finish_door:draw()
-      self.dialog_post:draw()
+      
+      for dialog_post in all(self.dialog_posts) do
+        dialog_post:draw()
+      end
+
       self.player:draw()
 
       for orb in all(self.orbs) do
@@ -132,7 +147,15 @@ function level_manager()
       end
       self.equipment_gui:draw()
       map(map_x, map_y, 0, 0, 16, 16, 8)
-    end
+      dtb_draw()
+    end,
+
+        -- callbacks
+    add_teleport_orb = function(self)
+      local new_orb = teleport_orb_init(0, 0, self.platforms)
+      new_orb.selected = true
+      add(self.orbs, new_orb)
+    end,
   }
 end
 
@@ -140,22 +163,27 @@ end
 level_start_state = {
   {
     dialog = 1,
-    teleport_orbs = 1,
-    clone_orbs = 0,
-    background = 0,
-  },
-  {
     teleport_orbs = 0,
     clone_orbs = 0,
     background = 0,
   },
   {
-    teleport_orbs = 1,
+    dialog = 2,
+    teleport_orbs = 0,
     clone_orbs = 0,
     background = 0,
   },
   {
-    teleport_orbs = 1,
+    dialog = 3,
+    teleport_orbs = 0,
+    clone_orbs = 0,
+    background = 0,
+  },
+  {
+    dialog = 4,
+    orb_dialog = 5,
+    callback_index = 1,
+    teleport_orbs = 0,
     clone_orbs = 0,
     background = 0,
   },
@@ -203,32 +231,22 @@ level_start_state = {
   { -- 13
     dialog = 4,
     teleport_orbs = 0,
-    clone_orbs = 2,
+    clone_orbs = 1,
     background = 0,
   },
   { -- 14
     teleport_orbs = 0,
-    clone_orbs = 0,
+    clone_orbs = 2,
     background = 0,
   },
   { -- 15
-    teleport_orbs = 0,
-    clone_orbs = 0,
+    teleport_orbs = 1,
+    clone_orbs = 1,
     background = 0,
   },
   { -- 16
-    teleport_orbs = 0,
-    clone_orbs = 0,
-    background = 0,
-  },
-  { -- 17
-    teleport_orbs = 0,
-    clone_orbs = 0,
-    background = 0,
-  },
-  { -- 18
-    teleport_orbs = 0,
-    clone_orbs = 0,
+    teleport_orbs = 1,
+    clone_orbs = 1,
     background = 0,
   },
 }

@@ -8,6 +8,7 @@ function plinit()
     grounded = false,
     on_platform = false,
     can_jump = true,
+    can_use_orbs = true,
     active_orb = 1,
     platforms = {},
     clone = false,
@@ -59,7 +60,7 @@ function plinit()
             self.orbs[self.active_orb].selected = true
           end
         end
-        if btnp(4) then -- orb placement
+        if btnp(4) and self.can_use_orbs then -- orb placement
           if count(self.orbs) > 0 then
             self.orbs[self.active_orb]:use(self)
           end
