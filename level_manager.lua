@@ -14,6 +14,7 @@ function level_manager()
     buttons = nil,
     background = 1,
     level = 1,
+    clouds = {},
     callbacks = {},
 
     init = function(self)
@@ -23,7 +24,9 @@ function level_manager()
       self.player = plinit()
       self.finish_door = finish_door_init(self.player, function() self:advance_level() end)
       self.equipment_gui = equipment_gui_init(self.orbs, self.player)
+      self.clouds = clouds_init()
       particle_manager = particle_manager_init()
+      -- particle_manager:stars()
       -- for initializing dialog library
       dtb_init(3)
       -- initialize particle renderer
@@ -66,6 +69,7 @@ function level_manager()
       map_y_offset = map_y * 8
 
       self.equipment_gui:level_set(self.orbs, self.player)
+      self.clouds:level_set()
 
       -- loop through the map space to see if we find any flags that we need to spawn
       for x=0, 15 do
@@ -125,12 +129,15 @@ function level_manager()
 
       self.finish_door:update()
       self.equipment_gui:update()
+      self.clouds:update()
       particle_manager:update()
       dtb_update()
     end,
 
     draw = function(self)
       cls(self.background)
+      self.clouds:draw()
+
       for platform in all(self.platforms) do
         platform:draw()
       end
@@ -173,7 +180,7 @@ level_start_state = {
     dialog = 1,
     teleport_orbs = 0,
     clone_orbs = 0,
-    background = 0,
+    background = 12,
   },
   {
     dialog = 2,

@@ -1,0 +1,39 @@
+function clouds_init()
+  return {
+    -- init
+    clouds = {},
+
+    level_set = function(self)
+      local cloud_num = 2 + rnd(5)
+      for i=1,cloud_num do
+        add(self.clouds, {
+          x = rnd(256),
+          y = 8 + rnd(60),
+          w = 16 + rnd(42),
+          spd = 0.05 + rnd(0.25)
+        })
+      end
+    end,
+
+    update = function(self)
+      for c in all(self.clouds) do
+        c.x -= c.spd
+        if c.x + c.w < 0 then
+          c.x = 128 + rnd(32)
+          c.y = 8 + rnd(40)
+          c.w = 16 + rnd(24)
+        end
+      end
+    end,
+
+    draw = function(self, cam_x)
+      for c in all(self.clouds) do
+        local sx = flr(c.x)
+        local r = c.w / 3
+        circfill(sx, c.y, r, 15)
+        circfill(sx + r, c.y - r/2, r*0.8, 15)
+        circfill(sx + r*2, c.y, r*0.7, 15)
+      end
+    end,
+  }
+end

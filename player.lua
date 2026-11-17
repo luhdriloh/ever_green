@@ -117,11 +117,11 @@ function plinit()
       end
 
       -- run particles
-      if self.state.name == 'walk' then
-        particle_manager:run(self, true)
-      else
-        particle_manager:run(self, false)
-      end
+      -- if self.state.name == 'walk' then
+      --   particle_manager:run(self, true)
+      -- else
+      --   particle_manager:run(self, false)
+      -- end
     end,
 
     draw = function(self)
