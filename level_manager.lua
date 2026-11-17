@@ -14,8 +14,9 @@ function level_manager()
     buttons = nil,
     grass = nil,
     background = 0,
-    level = 1,
+    level = 4,
     clouds = {},
+    butterflies = {},
     callbacks = {},
     transition = nil,
     trans_frame = 0,
@@ -103,6 +104,7 @@ function level_manager()
       self.orbs = {}
       self.dialog_posts = {}
       self.grass = {}
+      self.butterflies = {}
 
       local level_data = level_start_state[self.level]
       local count = 1
@@ -120,6 +122,8 @@ function level_manager()
         add(players, new_orb.clone)
         add(self.orbs, new_orb)
       end
+      
+      particle_manager.orbs = self.orbs
 
       -- Set map value 
       -- 8 Columns of levels in the map editor
@@ -161,6 +165,9 @@ function level_manager()
           elseif grass_sprite == sprite_num then
             mset(x_coord, y_coord, 0)
             add(self.grass, grass_init(self.player, x, y))
+          elseif butterfly_sprite == sprite_num then
+            mset(x_coord, y_coord, 0)
+            add(self.butterflies, butterfly_init(x, y))
           end
         end
       end
@@ -202,6 +209,7 @@ function level_manager()
         g:update()
       end
 
+      foreach(self.butterflies, function(butterfly) butterfly:update() end)
       self.door:update()
       self.equipment_gui:update()
       self.clouds:update()
@@ -240,6 +248,9 @@ function level_manager()
       for orb in all(self.orbs) do
         orb:draw()
       end
+
+      foreach(self.butterflies, function(butterfly) butterfly:draw() end)
+
       self.equipment_gui:draw()
       map(map_x, map_y, 0, 0, 16, 16, 8)
       dtb_draw()
@@ -251,7 +262,7 @@ function level_manager()
 
         -- callbacks
     add_teleport_orb = function(self)
-      local new_orb = teleport_orb_init(0, 0, self.platforms)
+      local new_orb = teleport_orb_init(0, 0, self.platforms, 1)
       new_orb.selected = true
       add(self.orbs, new_orb)
     end,

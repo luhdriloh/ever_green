@@ -19,6 +19,7 @@ death_flag = 2
 
 -- sprite nums
 grass_sprite = 57
+butterfly_sprite = 27
 
 -- flag values for equality checks
 platform_stop_flag_val = 32

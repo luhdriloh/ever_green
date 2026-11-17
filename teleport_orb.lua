@@ -35,6 +35,7 @@ function teleport_orb_init(x, y, platforms, index)
       self.placed = false
       o.x = self.x
       o.y = self.y
+      o.dy = 0
     end,
 
     update = function(self)

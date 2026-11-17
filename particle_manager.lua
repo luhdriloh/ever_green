@@ -6,6 +6,7 @@ function particle_manager()
     orb_highlight_emitters = {},
     door_emitters = {},
     door = nil,
+    orbs = nil,
 
     init = function(self)
       self:create_orb_emitters()
@@ -25,9 +26,16 @@ function particle_manager()
         e.update(e, delta_time)
       end
 
+      for orb in all(self.orbs) do
+        local emitter = self.orb_highlight_emitters[orb.index]
+        if orb.placed then
+          ps_set_pos(emitter, orb.x+4, orb.y+4)
+        end
+        emitter.update(emitter, delta_time)
+      end
+
       foreach(self.star_emitters, function(obj) obj.update(obj, delta_time) end)
       foreach(self.orb_emitters, function(obj) obj.update(obj, delta_time) end)
-      foreach(self.orb_highlight_emitters, function(obj) obj.update(obj, delta_time) end)
     end,
 
     draw = function(self)
