@@ -13,7 +13,7 @@ function level_manager()
     platforms = nil,
     buttons = nil,
     background = 1,
-    level = 4,
+    level = 1,
     callbacks = {},
 
     init = function(self)
@@ -23,7 +23,12 @@ function level_manager()
       self.player = plinit()
       self.finish_door = finish_door_init(self.player, function() self:advance_level() end)
       self.equipment_gui = equipment_gui_init(self.orbs, self.player)
+      particle_manager = particle_manager_init()
+      -- for initializing dialog library
       dtb_init(3)
+      -- initialize particle renderer
+      prev_time = time()
+      delta_time = time() - prev_time
     end,
 
     advance_level = function(self)
@@ -120,12 +125,12 @@ function level_manager()
 
       self.finish_door:update()
       self.equipment_gui:update()
+      particle_manager:update()
       dtb_update()
     end,
 
     draw = function(self)
       cls(self.background)
-      map(map_x, map_y, 0, 0, 16, 16, 147)
       for platform in all(self.platforms) do
         platform:draw()
       end
@@ -139,6 +144,9 @@ function level_manager()
       for dialog_post in all(self.dialog_posts) do
         dialog_post:draw()
       end
+
+      particle_manager:draw()
+      map(map_x, map_y, 0, 0, 16, 16, 147)
 
       self.player:draw()
 

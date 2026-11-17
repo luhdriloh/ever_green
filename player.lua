@@ -111,8 +111,16 @@ function plinit()
 
       update_frame(self, self.state)
       if self.switch_orbs > 0 then
+        -- switch orb animation
         self.sp = 18
         self.switch_orbs -= 1
+      end
+
+      -- run particles
+      if self.state.name == 'walk' then
+        particle_manager:run(self, true)
+      else
+        particle_manager:run(self, false)
       end
     end,
 

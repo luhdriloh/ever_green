@@ -2,18 +2,20 @@ pico-8 cartridge // http://www.pico-8.com
 version 43
 __lua__
 -- main
-#include main.p8
-#include player.p8
-#include utility.p8
-#include teleport_orb.p8
-#include level_manager.p8
-#include finish_door.p8
-#include dialog_post.p8
-#include platform.p8
-#include button.p8
-#include clone_orb.p8
-#include equipment_gui.p8
-#include dtb.p8
+#include main.lua
+#include player.lua
+#include utility.lua
+#include teleport_orb.lua
+#include level_manager.lua
+#include finish_door.lua
+#include dialog_post.lua
+#include platform.lua
+#include button.lua
+#include clone_orb.lua
+#include equipment_gui.lua
+#include dtb.lua
+#include ps.lua
+#include particle_manager.lua
 __gfx__
 00000000000000000000000000000000000000050000000000000000444449335355dddd555ddddd000000000066550000000000000000000000000011111111
 00000000000000050000000505775dd505775dd000000005000000054444449b37777777777777dd0944444206999950000000000000000000bbbb0011111111

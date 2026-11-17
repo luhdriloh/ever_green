@@ -65,36 +65,8 @@ button_info[48] = { sp=48, color=red }
 button_info[32] = { sp=32, color=blue }
 button_info[96] = { sp=96, color=orange }
 
-function apply_gravity(o)
-  if o.grounded then
-    return
-  end
-
-  local newy = o.y + (o.dy + dyupdate)
-  o.y = newy
-  o.dy = min(o.dy + dyupdate, max_dy)
-
-  -- tile-based ground
-  if check_grounded(o.x + map_x_offset, o.y + map_y_offset) then
-    o.dy = 0
-    o.grounded = true
-    while check_grounded(o.x + map_x_offset, o.y - 1 + map_y_offset) do
-      o.y -= 1
-    end
-    return
-  end
-
-  -- dynamic ground
-  for o2 in all(o.platforms) do
-    if check_dynamically_grounded(o, o2) then
-      o.dy = 0
-      o.grounded = true
-      -- snap player bottom to top of o2
-      o.y = o2.y  -- min 8 to take into account the height of the player character
-      return
-    end
-  end
-end
+-- global
+particle_manager = nil
 
 function apply_gravity_2(o)
   if o.grounded then
@@ -107,6 +79,7 @@ function apply_gravity_2(o)
   o.dy = min(o.dy + dyupdate, max_dy)
   o.y = o.y + o.dy
   
+  -- check all y collisions
   local y_dynamic_hit = false
   local y_map_hit = check_collision(o, solid_flag)
   for platform in all(o.platforms) do
@@ -116,6 +89,7 @@ function apply_gravity_2(o)
     end
   end
 
+  -- if we've hit something in the y axis lets snap to the top of the ground
   if y_map_hit and o.dy > 0 then
       -- tile-based ground
     if check_grounded(o.x + map_x_offset, o.y + map_y_offset) then
@@ -137,8 +111,9 @@ function apply_gravity_2(o)
       end
     end
   elseif (y_map_hit or y_dynamic_hit) and o.dy < 0 then
+    -- we've hit a ceiling
     o.y = old_y
-    o.dy = 0 -- hit ceiling
+    o.dy = 0
   else
     o.grounded = check_character_grounded(o)
   end
