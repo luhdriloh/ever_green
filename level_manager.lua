@@ -34,7 +34,8 @@ function level_manager()
       self.door = finish_door_init(self.player, function() self:advance_level() end)
       self.equipment_gui = equipment_gui_init(self.orbs, self.player)
       self.clouds = clouds_init()
-      particle_manager = particle_manager_init()
+      particle_manager = particle_manager()
+      particle_manager:init()
       -- particle_manager:stars()
       -- for initializing dialog library
       dtb_init(3)
@@ -52,8 +53,8 @@ function level_manager()
     update_transition = function(self)
       if not self.transition then return end
 
-      local x = self.door.x
-      local y = self.door.y
+      local x = self.door.x + 4
+      local y = self.door.y + 4
       local max_grow = max(max(x, 127-x), max(y, 127-y))
 
       if self.transition == "out" then
@@ -209,6 +210,8 @@ function level_manager()
       cls(self.background)
 
       self.clouds:draw()
+      particle_manager:draw()
+
       map(map_x, map_y, 0, 0, 16, 16, 147)
 
       for platform in all(self.platforms) do
@@ -224,8 +227,6 @@ function level_manager()
       for dialog_post in all(self.dialog_posts) do
         dialog_post:draw()
       end
-
-      particle_manager:draw()
 
       self.player:draw()
 
@@ -258,9 +259,9 @@ end
 level_start_state = {
   {
     dialog = 1,
-    teleport_orbs = 0,
-    clone_orbs = 0,
-    background = 14,
+    teleport_orbs = 1,
+    clone_orbs = 1,
+    background = 1,
   },
   {
     dialog = 2,

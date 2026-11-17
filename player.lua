@@ -62,7 +62,8 @@ function plinit()
         end
         if btnp(4) and self.can_use_orbs then -- orb placement
           if count(self.orbs) > 0 then
-            self.orbs[self.active_orb]:use(self)
+            local orb = self.orbs[self.active_orb]
+            orb:use(self)
           end
         end
       end
@@ -103,6 +104,12 @@ function plinit()
         newstate = character_animstate.fall
       end
 
+            -- run particles
+      if (self.state.name == 'jump' or self.state.name == 'fall')
+        and (newstate.name == 'idle' or newstate.name == 'walk') then
+        particle_manager:land(self, true)
+      end
+
       if self.state.name != newstate.name then
         self.state = newstate
         self.sp = self.state.start
@@ -115,13 +122,6 @@ function plinit()
         self.sp = 18
         self.switch_orbs -= 1
       end
-
-      -- run particles
-      -- if self.state.name == 'walk' then
-      --   particle_manager:run(self, true)
-      -- else
-      --   particle_manager:run(self, false)
-      -- end
     end,
 
     draw = function(self)

@@ -6,10 +6,10 @@ function clouds_init()
     level_set = function(self)
       self.clouds = {}
 
-      local cloud_num = rnd(7)
+      local cloud_num = 1 + rnd(6)
       for i=1,cloud_num do
         add(self.clouds, {
-          x = rnd(256),
+          x = rnd(160),
           y = 8 + rnd(60),
           w = 16 + rnd(24),
           spd = 0.05 + rnd(0.25)

@@ -39,7 +39,10 @@ map_y_offset = 0
 -- map platform color to activated color
 red = 8
 blue = 12
-orange = 10
+orange = 9
+yellow = 10
+green = 11
+
 
 -- map platform sprite -> direction
 platform_sprite_to_direction = {}
@@ -55,18 +58,18 @@ platform_sprite_to_direction[52] = { dx=1, dy=0, color=red, sp=52 }
 platform_sprite_to_direction[37] = { dx=-0, dy=1, color=blue, sp=37 }
 platform_sprite_to_direction[53] = { dx=-0, dy=1, color=red, sp=53 }
 
--- orange platforms
-platform_sprite_to_direction[112] = { dx=-1, dy=0, color=orange, sp=112 }
-platform_sprite_to_direction[113] = { dx=-0, dy=1, color=orange, sp=113 }
-platform_sprite_to_direction[114] = { dx=1, dy=0, color=orange, sp=114 }
-platform_sprite_to_direction[115] = { dx=-0, dy=-1, color=orange, sp=115 }
+-- yellow platforms
+platform_sprite_to_direction[112] = { dx=-1, dy=0, color=yellow, sp=112 }
+platform_sprite_to_direction[113] = { dx=-0, dy=1, color=yellow, sp=113 }
+platform_sprite_to_direction[114] = { dx=1, dy=0, color=yellow, sp=114 }
+platform_sprite_to_direction[115] = { dx=-0, dy=-1, color=yellow, sp=115 }
 
 
 -- button info
 button_info = {}
 button_info[48] = { sp=48, color=red }
 button_info[32] = { sp=32, color=blue }
-button_info[96] = { sp=96, color=orange }
+button_info[96] = { sp=96, color=yellow }
 
 -- global
 particle_manager = nil

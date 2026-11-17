@@ -20,6 +20,8 @@ function teleport_orb_init(x, y, platforms)
       if not self.placed then
         self:set(o.x, o.y)
       elseif self.placed then
+        particle_manager:use_orb(o, green, 1)
+        particle_manager:use_orb(self, green, 2)
         self:transport(o)
       end
     end,

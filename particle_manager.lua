@@ -1,49 +1,55 @@
-function particle_manager_init()
+function particle_manager()
   return {
-    run_emitters = {},
+    land_emitters = {},
     star_emitters = {},
+    orb_emitters = {},
 
-    level_set = function(self)
+    init = function(self)
+      self:create_orb_emitters()
     end,
 
     update = function(self)
       -- update time for ps particle library
       update_time()
-      for e in all(self.run_emitters) do
-        local x_pos = e.player.flx and e.player.x + 1 or e.player.x + 7
-        local angle = e.player.flx and 100 or 35
+      for e in all(self.land_emitters) do
 
-        ps_set_pos(e.emitter, x_pos, e.player.y+7)
-        ps_set_angle(e.emitter, angle, 45)
+        ps_set_pos(e.emitter, e.player.x+4, e.player.y+7)
         e.emitter.update(e.emitter, delta_time)
       end
 
       foreach(self.star_emitters, function(obj) obj.update(obj, delta_time) end)
+      foreach(self.orb_emitters, function(obj) obj.update(obj, delta_time) end)
     end,
 
     draw = function(self)
-      foreach(self.run_emitters, function(obj) obj.emitter:draw() end)
+      foreach(self.land_emitters, function(obj) obj.emitter:draw() end)
+      foreach(self.orb_emitters , function(obj) obj:draw() end)
       foreach(self.star_emitters, function(obj) obj:draw() end)
     end,
 
-    -- set up emitter for when the player is running
-    run = function(self, player, state)
+    -- set up emitter for when the player lands
+    land = function(self, player)
       local emitter_for_player = nil
-      for e in all(self.run_emitters) do
+      for e in all(self.land_emitters) do
         if e.player == player then
           emitter_for_player = e.emitter
           break
         end
       end
 
-      if emitter_for_player == nil and state then
-        local run_emitter = self:create_running_emitter(player)
-        add(self.run_emitters, {player=player, emitter=run_emitter})
-      elseif emitter_for_player != nil and state then
+      if emitter_for_player == nil then
+        self:create_land_emitter(player)
+      elseif emitter_for_player != nil then
         emitter_for_player.start_emit(emitter_for_player)
-      elseif emitter_for_player != nil and not state then
-        emitter_for_player.stop_emit(emitter_for_player)
       end
+    end,
+
+    -- set up emitter for teleportation burst
+    use_orb = function(self, o, color, index)
+      local emitter = self.orb_emitters[index]
+      ps_set_colours(emitter, {7, 6, color})
+      ps_set_pos(emitter, o.x+4, o.y+4)
+      emitter.start_emit(emitter)
     end,
 
     stars = function(self)
@@ -73,15 +79,39 @@ function particle_manager_init()
       add(self.star_emitters, back)
     end,
 
-    create_running_emitter = function(self, player)
-      local front = emitter.create(player.x, player.y+7, 0.25, 0)
-      local angle = player.flx and 100 or 35
+    orb_highlights = function(self, orb)
+    
+    end,
 
-      ps_set_colours(front, {7})
-      ps_set_size(front, 1, 0, 1, 0)
-      ps_set_speed(front, 20, 10, 10, 10)
-      ps_set_gravity(front, true)
-      return front
+    orb_use = function(self, orb)
+    end,
+
+    create_orb_emitters = function(self, o)
+      local burst = emitter.create(-60, 64, 0, 30)
+      ps_set_size(burst, 1, 0, 3, 0)
+      ps_set_speed(burst, 0)
+      ps_set_life(burst, .2, .5)
+      ps_set_colours(burst, {7, 6, 11})
+      ps_set_burst(burst, true, 10)
+      ps_set_area(burst, 6, 6)
+      ps_set_rnd_colour(burst, true)
+      add(self.orb_emitters, burst)
+      local burst_two = burst.clone(burst)
+      add(self.orb_emitters, burst_two)
+    end,
+
+    create_land_emitter = function(self, player)
+      local land_emitter = emitter.create(player.x + 4, player.y+7, 1, 0)
+        
+      ps_set_life(land_emitter, .1, .3)
+      ps_set_angle(land_emitter, 30, 150)
+      ps_set_rnd_colour(land_emitter, true)
+      ps_set_colours(land_emitter, { 6, 7 })
+      ps_set_size(land_emitter, 2, 0, 1, 0)
+      ps_set_speed(land_emitter, 25, 5, 10, 10)
+      ps_set_gravity(land_emitter, true)
+      ps_set_burst(land_emitter, true, 20)
+      add(self.land_emitters, {player=player, emitter=land_emitter})
     end,
 
   }

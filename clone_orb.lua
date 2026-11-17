@@ -14,8 +14,9 @@ function clone_orb_init(x, y, platforms)
 
     use = function(self, o)
       if self.clone_active then
-        self.clone.x = -1
-        self.clone.y = -1
+        particle_manager:use_orb(self.clone, orange, 1)
+        self.clone.x = -10
+        self.clone.y = -10
         self.clone_active = false
       elseif not self.placed then
         self.placed = true
@@ -23,6 +24,7 @@ function clone_orb_init(x, y, platforms)
       elseif self.placed then
         self.placed = false
         self.clone_active = true
+        particle_manager:use_orb(self, orange, 1)
         self.clone:level_set(self.x, self.y, nil, self.platforms, true, true)
       end
     end,
