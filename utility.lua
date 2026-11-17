@@ -15,6 +15,7 @@ solid_flag = 0
 platform_stop_flag = 5
 dialog_post_flag = 6
 player_flag = 7
+death_flag = 2
 
 -- sprite nums
 grass_sprite = 57
@@ -25,8 +26,6 @@ dialog_post_flag_val = 64
 player_flag_val = 128
 
 finish_door_flag_val = 6
-blue_button_flag_val = 2
-red_button_flag_val = 4
 
 -- map values
 -- map_x and map_y == TILE SPACE == 1 tile is 8 PIXELS

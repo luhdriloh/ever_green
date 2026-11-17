@@ -3,28 +3,39 @@ function particle_manager()
     land_emitters = {},
     star_emitters = {},
     orb_emitters = {},
+    orb_highlight_emitters = {},
+    door_emitters = {},
+    door = nil,
 
     init = function(self)
       self:create_orb_emitters()
+      self:create_orb_highlight_emitters()
+      -- self:create_door_emitters()
     end,
 
     update = function(self)
       -- update time for ps particle library
       update_time()
       for e in all(self.land_emitters) do
-
         ps_set_pos(e.emitter, e.player.x+4, e.player.y+7)
         e.emitter.update(e.emitter, delta_time)
       end
 
+      for e in all(self.door_emitters) do
+        e.update(e, delta_time)
+      end
+
       foreach(self.star_emitters, function(obj) obj.update(obj, delta_time) end)
       foreach(self.orb_emitters, function(obj) obj.update(obj, delta_time) end)
+      foreach(self.orb_highlight_emitters, function(obj) obj.update(obj, delta_time) end)
     end,
 
     draw = function(self)
       foreach(self.land_emitters, function(obj) obj.emitter:draw() end)
       foreach(self.orb_emitters , function(obj) obj:draw() end)
       foreach(self.star_emitters, function(obj) obj:draw() end)
+      foreach(self.orb_highlight_emitters, function(obj) obj:draw() end)
+      foreach(self.door_emitters, function(obj) obj:draw() end)
     end,
 
     -- set up emitter for when the player lands
@@ -50,6 +61,27 @@ function particle_manager()
       ps_set_colours(emitter, {7, 6, color})
       ps_set_pos(emitter, o.x+4, o.y+4)
       emitter.start_emit(emitter)
+    end,
+
+    orb_highlights = function(self, orb, color)
+      local emitter = self.orb_highlight_emitters[orb.index]
+
+      ps_set_pos(emitter, orb.x+4, orb.y+4)
+      ps_set_colours(emitter, {7, color})
+
+      if orb.placed then
+        emitter.start_emit(emitter)
+      else
+        emitter.stop_emit(emitter)
+      end
+    end,
+
+    set_door = function(self, o)
+      self.door = o
+      for emitter in all(self.door_emitters) do
+        ps_set_pos(emitter, o.x+4, o.y+3)
+        emitter.start_emit(emitter)
+      end
     end,
 
     stars = function(self)
@@ -79,11 +111,30 @@ function particle_manager()
       add(self.star_emitters, back)
     end,
 
-    orb_highlights = function(self, orb)
-    
+    create_orb_highlight_emitters = function(self)
+      local center = emitter.create(64, 64, .6, 0)
+      ps_set_size(center, 0)
+      ps_set_colours(center, {7, 12})
+      ps_set_rnd_colour(center, true)
+      ps_set_life(center, .4)
+      ps_set_speed(center, 60, -40)
+      center.stop_emit(center)
+      add(self.orb_highlight_emitters, center)
+      local two = center.clone(center)
+      two.stop_emit(two)
+      add(self.orb_highlight_emitters, two)
     end,
 
-    orb_use = function(self, orb)
+    create_door_emitters = function(self)
+      local spinner = emitter.create(64, 84, .4, 0)
+      ps_set_life(spinner, .7)
+      ps_set_speed(spinner, 10)
+      ps_set_colours(spinner, {6, 7, 9})
+      ps_set_size(spinner, 1, 0, 2, 1)
+      ps_set_angle(spinner, 0, 360)
+      ps_set_rnd_colour(spinner, true)
+      ps_set_gravity(spinner, true)
+      add(self.door_emitters, spinner)
     end,
 
     create_orb_emitters = function(self, o)
@@ -113,6 +164,5 @@ function particle_manager()
       ps_set_burst(land_emitter, true, 20)
       add(self.land_emitters, {player=player, emitter=land_emitter})
     end,
-
   }
 end

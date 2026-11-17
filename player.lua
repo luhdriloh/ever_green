@@ -73,6 +73,9 @@ function plinit()
         self.grounded = false
       end
 
+      -- Check if we've gotten nerfed
+      local hit = check_collision(self, solid_flag)
+
       -- === X PASS ===
       local old_x = self.x
       if self.dx != 0 then

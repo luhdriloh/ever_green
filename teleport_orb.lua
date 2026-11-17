@@ -1,4 +1,4 @@
-function teleport_orb_init(x, y, platforms)
+function teleport_orb_init(x, y, platforms, index)
   return {
     x = x * 8,
     y = y * 8,
@@ -6,9 +6,11 @@ function teleport_orb_init(x, y, platforms)
     platforms = platforms,
     dy = 0,
     sp = 13,
+    step = 0,
     pointer_sp = 21,
     selected = false,
     placed = false,
+    index = index,
 
     set = function(self, x, y)
       self.placed = true
@@ -19,10 +21,13 @@ function teleport_orb_init(x, y, platforms)
     use = function(self, o)
       if not self.placed then
         self:set(o.x, o.y)
+        particle_manager:orb_highlights(self, green)
       elseif self.placed then
         particle_manager:use_orb(o, green, 1)
         particle_manager:use_orb(self, green, 2)
         self:transport(o)
+        particle_manager:orb_highlights(self, green)
+        self.sp = green_orb_animstate.idle.start
       end
     end,
 
@@ -33,7 +38,10 @@ function teleport_orb_init(x, y, platforms)
     end,
 
     update = function(self)
-      apply_gravity_2(self)
+      if self.placed then
+        update_frame(self, green_orb_animstate.idle)
+        apply_gravity_2(self)
+      end
     end,
 
     draw = function(self)
@@ -46,3 +54,12 @@ function teleport_orb_init(x, y, platforms)
     end,
   }
 end
+
+green_orb_animstate = {
+  idle = {
+    name = "idle",
+    start = 13,
+    last = 14,
+    per_frame = 10,
+  },
+}

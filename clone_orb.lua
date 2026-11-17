@@ -1,4 +1,4 @@
-function clone_orb_init(x, y, platforms)
+function clone_orb_init(x, y, platforms, index)
   return {
     x = x * 8,
     y = y * 8,
@@ -6,9 +6,11 @@ function clone_orb_init(x, y, platforms)
     platforms = platforms,
     dy = 0,
     sp = 30,
+    step = 0,
     pointer_sp = 21,
     selected = false,
     placed = false,
+    index = index,
     clone_active = false,
     clone = plinit(),
 
@@ -21,11 +23,14 @@ function clone_orb_init(x, y, platforms)
       elseif not self.placed then
         self.placed = true
         self:set(o.x, o.y)
+        particle_manager:orb_highlights(self, orange)
       elseif self.placed then
         self.placed = false
         self.clone_active = true
         particle_manager:use_orb(self, orange, 1)
         self.clone:level_set(self.x, self.y, nil, self.platforms, true, true)
+        particle_manager:orb_highlights(self, green)
+        self.sp = orange_orb_animstate.idle.start
       end
     end,
 
@@ -36,6 +41,7 @@ function clone_orb_init(x, y, platforms)
 
     update = function(self)
       if self.placed then
+        update_frame(self, orange_orb_animstate.idle)
         apply_gravity_2(self)
       end
 
@@ -69,3 +75,12 @@ function clone_orb_init(x, y, platforms)
     end,
   }
 end
+
+orange_orb_animstate = {
+  idle = {
+    name = "idle",
+    start = 30,
+    last = 31,
+    per_frame = 10,
+  },
+}

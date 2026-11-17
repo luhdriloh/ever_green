@@ -105,15 +105,18 @@ function level_manager()
       self.grass = {}
 
       local level_data = level_start_state[self.level]
+      local count = 1
 
       for i=1, level_data.teleport_orbs do
-        local new_orb = teleport_orb_init(0, 0, self.platforms)
+        local new_orb = teleport_orb_init(0, 0, self.platforms, count)
+        count += 1
         add(self.orbs, new_orb)
       end
 
       local players = { self.player }
       for i=1, level_data.clone_orbs do
-        local new_orb = clone_orb_init(0, 0, self.platforms)
+        local new_orb = clone_orb_init(0, 0, self.platforms, count)
+        count += 1
         add(players, new_orb.clone)
         add(self.orbs, new_orb)
       end
