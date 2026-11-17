@@ -131,7 +131,7 @@ function dtb_draw()
         rectfill(2, by, 125, dtb_y, 1)
         rect(1, by-1, 126, dtb_y+1, 7)  -- NEW: white border
         if dtb_curline>0 and #dtb_dislines[#dtb_dislines]==#dtb_queu[1][dtb_curline] then
-            print("\x8e", 117, dtb_y-6, 7)
+            print("\x8e", 117, dtb_y+4, 7)
         end
         for i=1,dislineslength do
             print(dtb_dislines[i], 6, i*8+dtb_y-6-(dislineslength+offset)*8, 7)

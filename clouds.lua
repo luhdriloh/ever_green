@@ -28,13 +28,13 @@ function clouds_init()
       end
     end,
 
-    draw = function(self, cam_x)
+    draw = function(self)
       for c in all(self.clouds) do
         local sx = flr(c.x)
         local r = c.w / 3
-        circfill(sx, c.y, r, 15)
-        circfill(sx + r, c.y - r/2, r*0.8, 15)
-        circfill(sx + r*2, c.y, r*0.7, 15)
+        circfill(sx, c.y, r, 13)
+        circfill(sx + r, c.y - r/2, r*0.8, 13)
+        circfill(sx + r*2, c.y, r*0.7, 13)
       end
     end,
   }

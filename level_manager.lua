@@ -6,6 +6,7 @@
 function level_manager()
   return {
     player = nil,
+    players = nil,
     door = nil,
     dialog_posts = nil,
     orbs = nil,
@@ -14,7 +15,7 @@ function level_manager()
     buttons = nil,
     grass = nil,
     background = 0,
-    level = 4,
+    level = 1,
     clouds = {},
     butterflies = {},
     callbacks = {},
@@ -29,7 +30,8 @@ function level_manager()
 
     init = function(self)
       self.callbacks = {
-        function() self:add_teleport_orb() end
+        function() self:add_teleport_orb() end,
+        function() self:add_clone_orb() end
       }
       self.player = plinit()
       self.door = finish_door_init(self.player, function() self:advance_level() end)
@@ -105,6 +107,7 @@ function level_manager()
       self.dialog_posts = {}
       self.grass = {}
       self.butterflies = {}
+      self.players = {}
 
       local level_data = level_start_state[self.level]
       local count = 1
@@ -115,14 +118,14 @@ function level_manager()
         add(self.orbs, new_orb)
       end
 
-      local players = { self.player }
+      add(self.players, self.player)
       for i=1, level_data.clone_orbs do
         local new_orb = clone_orb_init(0, 0, self.platforms, count)
         count += 1
-        add(players, new_orb.clone)
+        add(self.players, new_orb.clone)
         add(self.orbs, new_orb)
       end
-      
+
       particle_manager.orbs = self.orbs
 
       -- Set map value 
@@ -161,7 +164,7 @@ function level_manager()
             add(self.platforms, platform_init(self.player, self.platforms, x, y, platform_sprite_to_direction[sprite_num]))
           elseif button_info[sprite_num] then
             mset(x_coord, y_coord, 0)
-            add(self.buttons, button_init(players, self.platforms, x, y, button_info[sprite_num]))
+            add(self.buttons, button_init(self.players, self.platforms, x, y, button_info[sprite_num]))
           elseif grass_sprite == sprite_num then
             mset(x_coord, y_coord, 0)
             add(self.grass, grass_init(self.player, x, y))
@@ -260,10 +263,17 @@ function level_manager()
       end
     end,
 
-        -- callbacks
+    -- callbacks
     add_teleport_orb = function(self)
       local new_orb = teleport_orb_init(0, 0, self.platforms, 1)
       new_orb.selected = true
+      add(self.orbs, new_orb)
+    end,
+
+    add_clone_orb = function(self)
+      local new_orb = clone_orb_init(0, 0, self.platforms, 1)
+      new_orb.selected = true
+      add(self.players, new_orb.clone)
       add(self.orbs, new_orb)
     end,
   }
@@ -317,7 +327,8 @@ level_start_state = {
     clone_orbs = 0,
     background = 0,
   },
-  {
+  { -- 9
+    dialog = 6,
     teleport_orbs = 2,
     clone_orbs = 0,
     background = 0,
@@ -333,9 +344,11 @@ level_start_state = {
     background = 0,
   },
   { -- 12
-    dialog = 3,
+    dialog = 7,
+    orb_dialog = 8,
+    callback_index = 2,
     teleport_orbs = 0,
-    clone_orbs = 1,
+    clone_orbs = 0,
     background = 0,
   },
   { -- 13
