@@ -12,7 +12,8 @@ function level_manager()
     equipment_gui = nil,
     platforms = nil,
     buttons = nil,
-    background = 1,
+    grass = nil,
+    background = 0,
     level = 1,
     clouds = {},
     callbacks = {},
@@ -45,6 +46,7 @@ function level_manager()
       self.platforms = {}
       self.orbs = {}
       self.dialog_posts = {}
+      self.grass = {}
 
       local level_data = level_start_state[self.level]
 
@@ -97,6 +99,9 @@ function level_manager()
           elseif button_info[sprite_num] then
             mset(x_coord, y_coord, 0)
             add(self.buttons, button_init(players, self.platforms, x, y, button_info[sprite_num]))
+          elseif grass_sprite == sprite_num then
+            mset(x_coord, y_coord, 0)
+            add(self.grass, grass_init(self.player, x, y))
           end
         end
       end
@@ -127,6 +132,10 @@ function level_manager()
         dialog_post:update()
       end
 
+      for g in all(self.grass) do
+        g:update()
+      end
+
       self.finish_door:update()
       self.equipment_gui:update()
       self.clouds:update()
@@ -137,6 +146,7 @@ function level_manager()
     draw = function(self)
       cls(self.background)
       self.clouds:draw()
+      map(map_x, map_y, 0, 0, 16, 16, 147)
 
       for platform in all(self.platforms) do
         platform:draw()
@@ -153,9 +163,12 @@ function level_manager()
       end
 
       particle_manager:draw()
-      map(map_x, map_y, 0, 0, 16, 16, 147)
 
       self.player:draw()
+
+      for g in all(self.grass) do
+        g:draw()
+      end
 
       for orb in all(self.orbs) do
         orb:draw()
@@ -180,7 +193,7 @@ level_start_state = {
     dialog = 1,
     teleport_orbs = 0,
     clone_orbs = 0,
-    background = 12,
+    background = 14,
   },
   {
     dialog = 2,

@@ -16,6 +16,9 @@ platform_stop_flag = 5
 dialog_post_flag = 6
 player_flag = 7
 
+-- sprite nums
+grass_sprite = 57
+
 -- flag values for equality checks
 platform_stop_flag_val = 32
 dialog_post_flag_val = 64
@@ -149,6 +152,22 @@ function update_frame(o, animstate)
   elseif o.step >= animstate.per_frame then
     o.step = 0
     o.sp = (o.sp + 1 - animstate.start) % (animstate.last - animstate.start + 1) + animstate.start
+  end
+end
+
+function update_frame_ping_pong(o, animstate)
+  o.step += 1
+  if animstate.per_frame == 0 then
+    o.sp = animstate.start
+  elseif o.step >= animstate.per_frame then
+    o.step = 0
+    if not o.dir then o.dir = 1 end
+    o.sp = o.sp + o.dir
+    if o.sp >= animstate.last then
+      o.dir = -1
+    elseif o.sp <= animstate.start then
+      o.dir = 1
+    end
   end
 end
 
