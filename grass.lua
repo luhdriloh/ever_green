@@ -10,6 +10,7 @@ function grass_init(player, x, y)
     sp = 57,
     dir = 1,
     frame = 0,
+    flx = rnd(10) > 5 and true or false,
 
     update = function(self)
       local old_is_player_close = self.is_player_close
@@ -24,7 +25,7 @@ function grass_init(player, x, y)
         self.state = grass_animstate.rustle
       end
 
-        if self.active and self.frame >= 12 then
+        if self.active and self.frame >= 8 then
           self.active = false
           self.state = grass_animstate.still
         end
@@ -34,7 +35,7 @@ function grass_init(player, x, y)
     end,
 
     draw = function(self)
-      spr(self.sp, self.x, self.y, 1, 1)
+      spr(self.sp, self.x, self.y, 1, 1, self.flx)
     end,
   }
 end
@@ -49,6 +50,6 @@ grass_animstate = {
     name = "rustle",
     start = 57,
     last = 59,
-    per_frame = 3
+    per_frame = 2
   },
 }

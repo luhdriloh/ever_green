@@ -6,7 +6,7 @@
 function level_manager()
   return {
     player = nil,
-    finish_door = nil,
+    door = nil,
     dialog_posts = nil,
     orbs = nil,
     equipment_gui = nil,
@@ -17,13 +17,21 @@ function level_manager()
     level = 1,
     clouds = {},
     callbacks = {},
+    transition = nil,
+    trans_frame = 0,
+    wipe_x = 0,
+    wipe_dir = 1,
+    show_text = false,
+    text_frame = 0,
+    pending_level = nil,
+    grow = 0,
 
     init = function(self)
       self.callbacks = {
         function() self:add_teleport_orb() end
       }
       self.player = plinit()
-      self.finish_door = finish_door_init(self.player, function() self:advance_level() end)
+      self.door = finish_door_init(self.player, function() self:advance_level() end)
       self.equipment_gui = equipment_gui_init(self.orbs, self.player)
       self.clouds = clouds_init()
       particle_manager = particle_manager_init()
@@ -36,8 +44,55 @@ function level_manager()
     end,
 
     advance_level = function(self)
-      self.level += 1
-      self:create_level()
+      self.pending_level = self.level + 1
+      self.grow = 0
+      self.transition = "out"
+    end,
+
+    update_transition = function(self)
+      if not self.transition then return end
+
+      local x = self.door.x
+      local y = self.door.y
+      local max_grow = max(max(x, 127-x), max(y, 127-y))
+
+      if self.transition == "out" then
+        self.grow += 4
+        if self.grow >= max_grow then
+          self.transition = "text"
+          self.text_frame = 0
+        end
+      elseif self.transition == "text" then
+        self.text_frame += 1
+        if self.text_frame == 30 then
+          self.level = self.pending_level
+          self:create_level()
+          self.grow = 0
+          self.transition = "in"
+        end
+      elseif self.transition == "in" then
+        self.grow += 4
+        if self.grow >= max_grow then
+          self.transition = nil
+        end
+      end
+    end,
+
+    draw_transition = function(self)
+      if not self.transition then return end
+      local x = self.door.x
+      local y = self.door.y
+
+      if self.transition == "out" then
+        rectfill(x - self.grow, y - self.grow, x + self.grow, y + self.grow, 0)
+      elseif self.transition == "text" then
+        rectfill(0, 0, 127, 127, 0)
+        print("level " .. self.pending_level, 48, 60, 15)
+      elseif self.transition == "in" then
+        local max_grow = max(max(x, 127-x), max(y, 127-y))
+        local g = max_grow - self.grow
+        rectfill(x - g, y - g, x + g, y + g, 0)
+      end
     end,
 
     create_level = function(self)
@@ -83,7 +138,7 @@ function level_manager()
           local flag_val = fget(sprite_num)
           if finish_door_flag_val == flag_val then
             mset(x_coord, y_coord, 0)
-            self.finish_door:level_set(x, y)
+            self.door:level_set(x, y)
           elseif player_flag_val == flag_val then
             mset(x_coord, y_coord, 0)
             self.player:level_set(x, y, self.orbs, self.platforms)
@@ -114,6 +169,13 @@ function level_manager()
 
     update = function(self)
       frame += 1
+
+      if self.transition then 
+        self:update_transition()
+        return
+      end
+
+
       for button in all(self.buttons) do
         button:update()
       end
@@ -136,7 +198,7 @@ function level_manager()
         g:update()
       end
 
-      self.finish_door:update()
+      self.door:update()
       self.equipment_gui:update()
       self.clouds:update()
       particle_manager:update()
@@ -145,6 +207,7 @@ function level_manager()
 
     draw = function(self)
       cls(self.background)
+
       self.clouds:draw()
       map(map_x, map_y, 0, 0, 16, 16, 147)
 
@@ -156,7 +219,7 @@ function level_manager()
         button:draw()
       end
 
-      self.finish_door:draw()
+      self.door:draw()
       
       for dialog_post in all(self.dialog_posts) do
         dialog_post:draw()
@@ -176,6 +239,10 @@ function level_manager()
       self.equipment_gui:draw()
       map(map_x, map_y, 0, 0, 16, 16, 8)
       dtb_draw()
+            
+      if self.transition then 
+        self:draw_transition()
+      end
     end,
 
         -- callbacks
