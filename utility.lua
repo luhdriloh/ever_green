@@ -37,10 +37,14 @@ map_y = 0
 map_y_offset = 0
 
 -- map platform color to activated color
+dark_gray = 5
+white = 7
 red = 8
 blue = 12
+dark_orange = 4
 orange = 9
 yellow = 10
+dark_green = 3
 green = 11
 
 
@@ -70,6 +74,11 @@ button_info = {}
 button_info[48] = { sp=48, color=red }
 button_info[32] = { sp=32, color=blue }
 button_info[96] = { sp=96, color=yellow }
+
+-- spike collision bounds by sprite number
+spike_bounds = {}
+spike_bounds[64] = { x=1, y=0, x2=6, y2=2 }
+spike_bounds[65] = { x=1, y=7, x2=6, y2=5 }
 
 -- global
 particle_manager = nil
@@ -188,7 +197,6 @@ function check_collision(o, flag_type, x1_offset, y1_offset, x2_offset, y2_offse
   local x2 = (x + x2_offset) / 8
   local y2 = (y + y2_offset) / 8
 
-  -- todo: use bitwise operations to check for multiple kinds of flags
   local a = fget(mget(x1, y1), flag_type)
   local c = fget(mget(x2, y1), flag_type)
   local d = fget(mget(x2, y2), flag_type)

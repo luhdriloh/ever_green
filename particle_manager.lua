@@ -66,7 +66,7 @@ function particle_manager()
     -- set up emitter for teleportation burst
     use_orb = function(self, o, color, index)
       local emitter = self.orb_emitters[index]
-      ps_set_colours(emitter, {7, 6, color})
+      ps_set_colours(emitter, color)
       ps_set_pos(emitter, o.x+4, o.y+4)
       emitter.start_emit(emitter)
     end,

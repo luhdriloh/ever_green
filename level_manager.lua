@@ -15,9 +15,10 @@ function level_manager()
     buttons = nil,
     grass = nil,
     background = 0,
-    level = 1,
+    level = 10,
     clouds = {},
     butterflies = {},
+    spikes = {},
     callbacks = {},
     transition = nil,
     trans_frame = 0,
@@ -107,6 +108,7 @@ function level_manager()
       self.dialog_posts = {}
       self.grass = {}
       self.butterflies = {}
+      self.spikes = {}
       self.players = {}
 
       local level_data = level_start_state[self.level]
@@ -171,6 +173,9 @@ function level_manager()
           elseif butterfly_sprite == sprite_num then
             mset(x_coord, y_coord, 0)
             add(self.butterflies, butterfly_init(x, y))
+          elseif spike_bounds[sprite_num] then
+            mset(x_coord, y_coord, 0)
+            add(self.spikes, spike_init(self.player, x, y, sprite_num))
           end
         end
       end
@@ -213,6 +218,7 @@ function level_manager()
       end
 
       foreach(self.butterflies, function(butterfly) butterfly:update() end)
+      foreach(self.spikes, function(spike) spike:update() end)
       self.door:update()
       self.equipment_gui:update()
       self.clouds:update()
@@ -253,6 +259,7 @@ function level_manager()
       end
 
       foreach(self.butterflies, function(butterfly) butterfly:draw() end)
+      foreach(self.spikes, function(spike) spike:draw() end)
 
       self.equipment_gui:draw()
       map(map_x, map_y, 0, 0, 16, 16, 8)

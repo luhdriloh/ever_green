@@ -3,6 +3,8 @@ function plinit()
   return {
     x = 0,
     y = 0,
+    start_x = 0,
+    start_y = 0,
     dy = 0,
     flx = true,
     grounded = false,
@@ -12,7 +14,8 @@ function plinit()
     active_orb = 1,
     platforms = {},
     clone = false,
-    switch_orbs = 0, -- keeps track of the switch orb animation 3 frames long
+    stuck_frames = 0,
+    switch_orbs_frames = 0, -- keeps track of the switch orb animation 3 frames long
 
     -- animation values
     state = character_animstate.idle,
@@ -23,6 +26,8 @@ function plinit()
     level_set = function(self, x, y, orbs, platforms, clone, pixel_space)
       self.x = pixel_space and x or x * 8
       self.y = pixel_space and y or y * 8
+      self.start_x = self.x
+      self.start_y = self.y
       self.active_orb = 1
       self.orbs = orbs
       self.platforms = platforms
@@ -54,7 +59,7 @@ function plinit()
           local orb_count = count(self.orbs)
           if orb_count > 0 then
             frame = 0
-            self.switch_orbs = 3
+            self.switch_orbs_frames = 3
             self.orbs[self.active_orb].selected = false
             self.active_orb = 1 + ((self.active_orb) % orb_count)
             self.orbs[self.active_orb].selected = true
@@ -74,7 +79,7 @@ function plinit()
       end
 
       -- Check if we've gotten nerfed
-      local hit = check_collision(self, solid_flag)
+      local killed = check_collision(self, death_flag)
 
       -- === X PASS ===
       local old_x = self.x
@@ -96,9 +101,7 @@ function plinit()
       end
 
       -- === Y PASS ===
-      -- todo: add a death anim if the player is smashed between 2 objects
       apply_gravity_2(self)
-      
 
       -- animation state
       if self.dy < 0 then
@@ -107,7 +110,7 @@ function plinit()
         newstate = character_animstate.fall
       end
 
-            -- run particles
+      -- jump land particles
       if (self.state.name == 'jump' or self.state.name == 'fall')
         and (newstate.name == 'idle' or newstate.name == 'walk') then
         particle_manager:land(self, true)
@@ -120,16 +123,30 @@ function plinit()
       end
 
       update_frame(self, self.state)
-      if self.switch_orbs > 0 then
+      if self.switch_orbs_frames > 0 then
         -- switch orb animation
         self.sp = 18
-        self.switch_orbs -= 1
+        self.switch_orbs_frames -= 1
       end
     end,
 
     draw = function(self)
       spr(self.sp, self.x, self.y, 1, 1, self.flx)
-    end
+    end,
+
+    respawn = function(self)
+      -- set all orbs to 'placed' = false
+      for orb in all(self.orbs) do
+        orb.placed = false
+        if orb.clone_active != nil then
+          orb.clone_active = false
+        end
+      end
+      particle_manager:use_orb(self, { dark_gray, white }, 1)
+      self.x = self.start_x
+      self.y = self.start_y
+      particle_manager:use_orb(self, { dark_gray, white }, 2)
+    end,
   }
 end
 
