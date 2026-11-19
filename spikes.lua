@@ -19,7 +19,7 @@ function spike_init(player, x, y, sp)
 
       -- player hitbox in world space
       local px = self.player.x + map_x_offset
-      local py = self.player.y + map_x_offset
+      local py = self.player.y + map_y_offset
       local pl = px + 2
       local pr = px + 5
       local pt = py + 2

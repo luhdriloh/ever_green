@@ -77,8 +77,8 @@ button_info[96] = { sp=96, color=yellow }
 
 -- spike collision bounds by sprite number
 spike_bounds = {}
-spike_bounds[64] = { x=1, y=0, x2=6, y2=2 }
-spike_bounds[65] = { x=1, y=7, x2=6, y2=5 }
+spike_bounds[60] = { x=1, y=0, x2=6, y2=2 }
+spike_bounds[61] = { x=1, y=7, x2=6, y2=5 }
 
 -- global
 particle_manager = nil

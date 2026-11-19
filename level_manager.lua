@@ -15,7 +15,7 @@ function level_manager()
     buttons = nil,
     grass = nil,
     background = 0,
-    level = 10,
+    level = 1,
     clouds = {},
     butterflies = {},
     spikes = {},
@@ -40,7 +40,7 @@ function level_manager()
       self.clouds = clouds_init()
       particle_manager = particle_manager()
       particle_manager:init()
-      -- particle_manager:stars()
+      particle_manager:stars()
       -- for initializing dialog library
       dtb_init(3)
       -- initialize particle renderer

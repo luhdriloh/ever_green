@@ -103,6 +103,25 @@ function plinit()
       -- === Y PASS ===
       apply_gravity_2(self)
 
+      -- Stuck checks
+      local stuck = check_collision(self, solid_flag)
+      for platform in all(self.platforms) do
+        if check_dynamic_collisions(self, platform) then
+          stuck = true
+          break
+        end
+      end
+
+      if stuck then
+        self.stuck_frames += 1
+        if self.stuck_frames > 3 then
+          self.stuck_frames = 0
+          self:respawn()
+        end
+      else
+        self.stuck_frames = 0
+      end
+
       -- animation state
       if self.dy < 0 then
         newstate = character_animstate.jump
@@ -141,6 +160,7 @@ function plinit()
         if orb.clone_active != nil then
           orb.clone_active = false
         end
+        particle_manager:orb_highlights(orb, white)
       end
       particle_manager:use_orb(self, { dark_gray, white }, 1)
       self.x = self.start_x

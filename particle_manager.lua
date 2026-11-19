@@ -4,14 +4,11 @@ function particle_manager()
     star_emitters = {},
     orb_emitters = {},
     orb_highlight_emitters = {},
-    door_emitters = {},
-    door = nil,
     orbs = nil,
 
     init = function(self)
       self:create_orb_emitters()
       self:create_orb_highlight_emitters()
-      -- self:create_door_emitters()
     end,
 
     update = function(self)
@@ -22,10 +19,6 @@ function particle_manager()
         e.emitter.update(e.emitter, delta_time)
       end
 
-      for e in all(self.door_emitters) do
-        e.update(e, delta_time)
-      end
-
       for orb in all(self.orbs) do
         local emitter = self.orb_highlight_emitters[orb.index]
         if orb.placed then
@@ -34,8 +27,16 @@ function particle_manager()
         emitter.update(emitter, delta_time)
       end
 
-      foreach(self.star_emitters, function(obj) obj.update(obj, delta_time) end)
       foreach(self.orb_emitters, function(obj) obj.update(obj, delta_time) end)
+
+      foreach(self.star_emitters, function(obj)
+        obj.update(obj, delta_time)
+        local t = time()
+        local sway = sin(t * 0.05) * 4
+        for p in all(obj.particles) do
+          p.pos.x += sway * delta_time
+        end
+      end)
     end,
 
     draw = function(self)
@@ -43,7 +44,6 @@ function particle_manager()
       foreach(self.orb_emitters , function(obj) obj:draw() end)
       foreach(self.star_emitters, function(obj) obj:draw() end)
       foreach(self.orb_highlight_emitters, function(obj) obj:draw() end)
-      foreach(self.door_emitters, function(obj) obj:draw() end)
     end,
 
     -- set up emitter for when the player lands
@@ -84,39 +84,32 @@ function particle_manager()
       end
     end,
 
-    set_door = function(self, o)
-      self.door = o
-      for emitter in all(self.door_emitters) do
-        ps_set_pos(emitter, o.x+4, o.y+3)
-        emitter.start_emit(emitter)
-      end
-    end,
-
     stars = function(self)
-      local front = emitter.create(64, 64, 0.2, 0)
-      ps_set_speed(front, 0, 0)
-      ps_set_area(front, 128, 128)
-      ps_set_colours(front, {7})
+      local front = emitter.create(64, 128, .04, 0)
+      ps_set_speed(front, 2, 7)
+      ps_set_area(front, 128, 30)
+      ps_set_colours(front, {6, 7})
       ps_set_size(front, 0, 0, 1, 0)
-      ps_set_life(front, .2, 30)
-      ps_set_angle(front, 0, 0)
+      ps_set_life(front, 10, 40)
+      ps_set_angle(front, 90)
+      ps_set_rnd_colour(front, true)
       add(self.star_emitters, front)
-      local midfront = front.clone(front)
-      ps_set_frequency(midfront, 0.1)
-      ps_set_life(midfront, .2, 30)
-      ps_set_colours(midfront, {6})
-      add(self.star_emitters, midfront)
-      local midback = front.clone(front)
-      ps_set_life(midback, .2, 30)
-      ps_set_colours(midback, {5})
-      ps_set_frequency(midback, 0.08)
-      add(self.star_emitters, midback)
-      local back = front.clone(front)
-      ps_set_frequency(back, 0.01)
-      ps_set_size(back, 0, 0, 1, 0)
-      ps_set_life(back, .2, 30)
-      ps_set_colours(back, {15})
-      add(self.star_emitters, back)
+      -- local midfront = front.clone(front)
+      -- ps_set_frequency(midfront, 0.1)
+      -- ps_set_life(midfront, .2, 30)
+      -- ps_set_colours(midfront, {6})
+      -- add(self.star_emitters, midfront)
+      -- local midback = front.clone(front)
+      -- ps_set_life(midback, .2, 30)
+      -- ps_set_colours(midback, {5})
+      -- ps_set_frequency(midback, 0.08)
+      -- add(self.star_emitters, midback)
+      -- local back = front.clone(front)
+      -- ps_set_frequency(back, 0.01)
+      -- ps_set_size(back, 0, 0, 1, 0)
+      -- ps_set_life(back, .2, 30)
+      -- ps_set_colours(back, {15})
+      -- add(self.star_emitters, back)
     end,
 
     create_orb_highlight_emitters = function(self)
@@ -131,18 +124,6 @@ function particle_manager()
       local two = center.clone(center)
       two.stop_emit(two)
       add(self.orb_highlight_emitters, two)
-    end,
-
-    create_door_emitters = function(self)
-      local spinner = emitter.create(64, 84, .4, 0)
-      ps_set_life(spinner, .7)
-      ps_set_speed(spinner, 10)
-      ps_set_colours(spinner, {6, 7, 9})
-      ps_set_size(spinner, 1, 0, 2, 1)
-      ps_set_angle(spinner, 0, 360)
-      ps_set_rnd_colour(spinner, true)
-      ps_set_gravity(spinner, true)
-      add(self.door_emitters, spinner)
     end,
 
     create_orb_emitters = function(self, o)
