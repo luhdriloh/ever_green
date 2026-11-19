@@ -1,28 +1,18 @@
-function button_init(players, platforms, x, y, button_properties)
+function button_init(players, platforms, x, y, button_props)
 		return {
 			x = x * 8,
       y = y * 8,
 			players = players,
 			platforms = platforms,
-			button_properties = button_properties,
+			button_props = button_props,
 			active = false,
 
 			update = function(self)
-				-- check if the user has pressed the button_properties
-				-- check the feet location
 				local old_active = self.active
 				self.active = false
 
 				for player in all(self.players) do
 					self.active = self.active or check_dynamic_collisions(player, self, 3, -2, 4, 0)
-				end
-
-				for platform in all(self.platforms) do
-					if check_dynamically_grounded(self, platform) then
-						platform:attach(self)
-						self.y = platform.y - 8 -- to take account of the placement of the character sprite 8x8/
-						break
-					end
 				end
 
 				if old_active != self.active then
@@ -31,18 +21,18 @@ function button_init(players, platforms, x, y, button_properties)
 			end,
 
 			draw = function(self)
-				local sp = self.active and self.button_properties.sp+1 or self.button_properties.sp
+				local sp = self.active and self.button_props.sp+1 or self.button_props.sp
 				spr(sp, self.x, self.y)
 			end,
 
 			set_platforms = function(self, active)
-				if self.button_properties.color == orange and active == false then
+				if self.button_props.color == yellow and active == false then
 					return
 				end
 				-- set platforms of the same color to the appropriate state
 				for platform in all(self.platforms) do
-					if platform.properties.color == self.button_properties.color then
-						if platform.properties.color == orange then
+					if platform.properties.color == self.button_props.color then
+						if platform.properties.color == yellow then
 							platform:activate(not platform.active)
 						else
 							platform:activate(active)

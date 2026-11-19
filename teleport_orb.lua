@@ -21,29 +21,21 @@ function teleport_orb_init(x, y, platforms, index)
     use = function(self, o)
       if not self.placed then
         self:set(o.x, o.y)
-        particle_manager:orb_highlights(self, green, true)
       elseif self.placed then
         particle_manager:use_orb(o, { green, dark_green }, 1)
         particle_manager:use_orb(self, { green, dark_green }, 2)
-        self:transport(o)
-        particle_manager:orb_highlights(self, green, false)
+        self.placed = false
+        o.x = self.x
+        o.y = self.y
+        o.dy = 0
         self.sp = green_orb_animstate.idle.start
       end
-    end,
-
-    transport = function(self, o)
-      self.placed = false
-      o.x = self.x
-      o.y = self.y
-      o.dy = 0
     end,
 
     update = function(self)
       if self.placed then
         update_frame(self, green_orb_animstate.idle)
         apply_gravity_2(self)
-      else
-        particle_manager:orb_highlights(self, green, false)
       end
     end,
 

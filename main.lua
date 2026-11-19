@@ -2,8 +2,8 @@
 function _init()
   -- custom color pallette 
   --  https://nerdyteachers.com/PICO-8/Palette/
---   poke(0x5f2e,1)
--- pal({[0]=0,1,2,3,4,5,6,7,8,9,10,11,12,13,-15,15},1)
+  poke(0x5f2e, 1)
+  pal({[0]=0,1,2,3,4,5,6,7,8,9,10,11,12,13,134,15},1)
 
   -- Makes it so that btnp only registers once
   poke(0x5f5c, 255)

@@ -3,12 +3,11 @@ function particle_manager()
     land_emitters = {},
     star_emitters = {},
     orb_emitters = {},
-    orb_highlight_emitters = {},
     orbs = nil,
 
     init = function(self)
       self:create_orb_emitters()
-      self:create_orb_highlight_emitters()
+      self:stars()
     end,
 
     update = function(self)
@@ -17,14 +16,6 @@ function particle_manager()
       for e in all(self.land_emitters) do
         ps_set_pos(e.emitter, e.player.x+4, e.player.y+7)
         e.emitter.update(e.emitter, delta_time)
-      end
-
-      for orb in all(self.orbs) do
-        local emitter = self.orb_highlight_emitters[orb.index]
-        if orb.placed then
-          ps_set_pos(emitter, orb.x+4, orb.y+4)
-        end
-        emitter.update(emitter, delta_time)
       end
 
       foreach(self.orb_emitters, function(obj) obj.update(obj, delta_time) end)
@@ -43,7 +34,6 @@ function particle_manager()
       foreach(self.land_emitters, function(obj) obj.emitter:draw() end)
       foreach(self.orb_emitters , function(obj) obj:draw() end)
       foreach(self.star_emitters, function(obj) obj:draw() end)
-      foreach(self.orb_highlight_emitters, function(obj) obj:draw() end)
     end,
 
     -- set up emitter for when the player lands
@@ -66,26 +56,14 @@ function particle_manager()
     -- set up emitter for teleportation burst
     use_orb = function(self, o, color, index)
       local emitter = self.orb_emitters[index]
+      printh(foreach(color, function(col) printh(col) end))
       ps_set_colours(emitter, color)
       ps_set_pos(emitter, o.x+4, o.y+4)
       emitter.start_emit(emitter)
     end,
 
-    orb_highlights = function(self, orb, color)
-      local emitter = self.orb_highlight_emitters[orb.index]
-
-      ps_set_pos(emitter, orb.x+4, orb.y+4)
-      ps_set_colours(emitter, {7, color})
-
-      if orb.placed then
-        emitter.start_emit(emitter)
-      else
-        emitter.stop_emit(emitter)
-      end
-    end,
-
     stars = function(self)
-      local front = emitter.create(64, 128, .04, 0)
+      local front = emitter.create(64, 128, .02, 0)
       ps_set_speed(front, 2, 7)
       ps_set_area(front, 128, 30)
       ps_set_colours(front, {6, 7})
@@ -94,36 +72,6 @@ function particle_manager()
       ps_set_angle(front, 90)
       ps_set_rnd_colour(front, true)
       add(self.star_emitters, front)
-      -- local midfront = front.clone(front)
-      -- ps_set_frequency(midfront, 0.1)
-      -- ps_set_life(midfront, .2, 30)
-      -- ps_set_colours(midfront, {6})
-      -- add(self.star_emitters, midfront)
-      -- local midback = front.clone(front)
-      -- ps_set_life(midback, .2, 30)
-      -- ps_set_colours(midback, {5})
-      -- ps_set_frequency(midback, 0.08)
-      -- add(self.star_emitters, midback)
-      -- local back = front.clone(front)
-      -- ps_set_frequency(back, 0.01)
-      -- ps_set_size(back, 0, 0, 1, 0)
-      -- ps_set_life(back, .2, 30)
-      -- ps_set_colours(back, {15})
-      -- add(self.star_emitters, back)
-    end,
-
-    create_orb_highlight_emitters = function(self)
-      local center = emitter.create(64, 64, .6, 0)
-      ps_set_size(center, 0)
-      ps_set_colours(center, {7, 12})
-      ps_set_rnd_colour(center, true)
-      ps_set_life(center, .4)
-      ps_set_speed(center, 60, -40)
-      center.stop_emit(center)
-      add(self.orb_highlight_emitters, center)
-      local two = center.clone(center)
-      two.stop_emit(two)
-      add(self.orb_highlight_emitters, two)
     end,
 
     create_orb_emitters = function(self, o)
@@ -132,17 +80,17 @@ function particle_manager()
       ps_set_speed(burst, 0)
       ps_set_life(burst, .2, .5)
       ps_set_colours(burst, {7, 6, 11})
-      ps_set_burst(burst, true, 10)
+      ps_set_burst(burst, true, 20)
       ps_set_area(burst, 6, 6)
       ps_set_rnd_colour(burst, true)
       add(self.orb_emitters, burst)
-      local burst_two = burst.clone(burst)
-      add(self.orb_emitters, burst_two)
+
+      -- We have 2 orbs - create 2 orbs
+      add(self.orb_emitters, burst.clone(burst))
     end,
 
     create_land_emitter = function(self, player)
       local land_emitter = emitter.create(player.x + 4, player.y+7, 1, 0)
-        
       ps_set_life(land_emitter, .1, .3)
       ps_set_angle(land_emitter, 30, 150)
       ps_set_rnd_colour(land_emitter, true)

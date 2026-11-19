@@ -5,16 +5,17 @@ function plinit()
     y = 0,
     start_x = 0,
     start_y = 0,
+    dx = 0,
     dy = 0,
     flx = true,
     grounded = false,
     on_platform = false,
-    can_jump = true,
-    can_use_orbs = true,
+    freeze = false,
     active_orb = 1,
     platforms = {},
     clone = false,
     stuck_frames = 0,
+    dead = false,
     switch_orbs_frames = 0, -- keeps track of the switch orb animation 3 frames long
 
     -- animation values
@@ -32,6 +33,7 @@ function plinit()
       self.orbs = orbs
       self.platforms = platforms
       self.clone = clone or false
+      self.freeze = false
 
       if self.clone == false and count(self.orbs) > 0 do
         self.orbs[1].selected = true
@@ -65,7 +67,7 @@ function plinit()
             self.orbs[self.active_orb].selected = true
           end
         end
-        if btnp(4) and self.can_use_orbs then -- orb placement
+        if btnp(4) and not self.freeze then -- orb placement
           if count(self.orbs) > 0 then
             local orb = self.orbs[self.active_orb]
             orb:use(self)
@@ -73,13 +75,10 @@ function plinit()
         end
       end
 
-      if btn(5) and self.grounded and self.can_jump then
+      if btn(5) and self.grounded and not self.freeze then
         self.dy = jump_speed
         self.grounded = false
       end
-
-      -- Check if we've gotten nerfed
-      local killed = check_collision(self, death_flag)
 
       -- === X PASS ===
       local old_x = self.x
@@ -114,7 +113,7 @@ function plinit()
 
       if stuck then
         self.stuck_frames += 1
-        if self.stuck_frames > 3 then
+        if self.stuck_frames > 4 then
           self.stuck_frames = 0
           self:respawn()
         end
@@ -153,19 +152,39 @@ function plinit()
       spr(self.sp, self.x, self.y, 1, 1, self.flx)
     end,
 
+    move_player_x = function(self, x_dist)
+      local old_x = self.x
+      self.x += x_dist
+
+      local x_hit = check_collision(self, solid_flag)
+      for platform in all(self.platforms) do
+        if check_dynamic_collisions(self, platform) then
+          x_hit = true
+          break
+        end
+      end
+
+      if x_hit then
+        self.x = old_x
+      end
+    end,
+
     respawn = function(self)
       -- set all orbs to 'placed' = false
+      self.dead = true
       for orb in all(self.orbs) do
         orb.placed = false
         if orb.clone_active != nil then
           orb.clone_active = false
+          orb.clone.x = -20
         end
-        particle_manager:orb_highlights(orb, white)
       end
-      particle_manager:use_orb(self, { dark_gray, white }, 1)
-      self.x = self.start_x
-      self.y = self.start_y
-      particle_manager:use_orb(self, { dark_gray, white }, 2)
+      if not self.clone then
+        particle_manager:use_orb(self, { dark_gray, white }, 1)
+        self.x = self.start_x
+        self.y = self.start_y
+        particle_manager:use_orb(self, { dark_gray, white }, 2)
+      end
     end,
   }
 end

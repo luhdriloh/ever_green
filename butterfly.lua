@@ -21,8 +21,10 @@ function butterfly_init(x, y)
 
 			self.t += self.spd
 
-			self.x = self.ox + self.rx * sin(self.t) + 4*sin(self.t*3)
-			self.y = self.oy + self.ry * sin(self.t*2) + 3*cos(self.t*5)
+			self.x = self.ox + self.rx * sin(self.t)
+			self.y = self.oy + self.ry * sin(self.t * 2)
+			-- self.x = self.ox + self.rx * sin(self.t) + 4*sin(self.t*3)
+			-- self.y = self.oy + self.ry * sin(self.t*2) + 3*cos(self.t*5)
 
 			self.vx = self.x - px
 
@@ -49,13 +51,10 @@ function butterfly_init(x, y)
 		
 
 		draw = function(self)
-			-- trail: white → gray → dark gray → gone
 			for i = 1, #self.trail do
 				local p = self.trail[i]
 				local age = i / #self.trail
 				local col = 7
-				-- if age > 0.6 then col = 5
-				-- elseif age > 0.3 then col = 6 end
 				pset(p.x, p.y, col)
 			end
 

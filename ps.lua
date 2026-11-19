@@ -323,15 +323,12 @@ function emitter:clone()
  ps_set_burst(new, self.burst, self.burst_amount)
  ps_set_gravity(new, self.gravity)
  ps_set_rnd_colour(new, self.rnd_colour)
- ps_set_rnd_sprite(new, self.rnd_sprite)
  ps_set_area(new, self.area_width, self.area_height)
  ps_set_colours(new, self.p_colours)
- ps_set_sprites(new, self.p_sprites)
  ps_set_life(new, self.p_life, self.p_life_spread)
  ps_set_angle(new, self.p_angle, self.p_angle_spread)
  ps_set_speed(new, self.p_speed_initial, self.p_speed_final, self.p_speed_spread_initial, self.p_speed_spread_final)
  ps_set_size(new, self.p_size_initial, self.p_size_final, self.p_size_spread_initial, self.p_size_spread_final)
- ps_set_pooling(new, self.use_pooling)
  return new
 end
 
@@ -358,20 +355,8 @@ function ps_set_burst(e, burst, burst_amount)
  e.burst_amount = burst_amount or e.max_p
 end
 
-function ps_set_pooling(e, pooling)
- e.use_pooling = pooling
- e.pool = {}
- if (e.use_pooling and e.max_p < 1) then
-  e.max_p = 20
- end
-end
-
 function ps_set_rnd_colour(e, rnd_colour)
  e.rnd_colour = rnd_colour
-end
-
-function ps_set_rnd_sprite(e, rnd_sprite)
- e.rnd_sprite = rnd_sprite
 end
 
 function ps_set_area(e, width, height)
@@ -382,10 +367,6 @@ end
 
 function ps_set_colours(e, colours)
  e.p_colours = colours
-end
-
-function ps_set_sprites(e, sprites)
- e.p_sprites = sprites
 end
 
 function ps_set_life(e, life, life_spread)

@@ -1,16 +1,16 @@
-function dialog_post_init(player, sp, x, y, counter, activation_callback)
+function dialog_post_init(player, sp, x, y, counter, activate_callback)
   return {
     x = x * 8,
     y = y * 8,
     sp = sp,
-    press_button_sp = 26,
+    butn_sp = 26,
     player = player,
     dialog_counter = counter,
-    activation_callback = activation_callback,
+    activate_callback = activate_callback,
     dialogue_active = false,
     is_player_close = false,
     dialog_text = {
-      "😐 hi little forest gnome, i'm the great forest diety 웃 and i need your help getting back the forests light. all you have to do is go through the tree light portals!",
+      "😐 hi little forest gnome, i'm the great forest diety 웃 and i need your help getting back the forests light. go through the tree light portals to start collecting light.",
       "press x to jump on the ledges",
       "try standing on the blue button to see if anything happens",
       "have some of my teleport powers. go grab that green teleport orb",
@@ -26,18 +26,16 @@ function dialog_post_init(player, sp, x, y, counter, activation_callback)
          abs(self.player.y - self.y) < 8
 
       if self.is_player_close then
-        self.player.can_jump = false
-        self.player.can_use_orbs = false
+        self.player.freeze = true
       elseif not self.is_player_close and old_is_player_close then
-        self.player.can_jump = true
-        self.player.can_use_orbs = true
+        self.player.freeze = false
       end
 
       if self.is_player_close and self.player.grounded and btnp(5) and not self.dialogue_active then
         self.dialogue_active = true
 
-        if self.activation_callback != nil then
-          self.activation_callback()
+        if self.activate_callback != nil then
+          self.activate_callback()
         end
 
         dtb_disp(self.dialog_text[self.dialog_counter], function()
@@ -52,7 +50,7 @@ function dialog_post_init(player, sp, x, y, counter, activation_callback)
     draw = function(self)
       spr(self.sp, self.x, self.y)
       if self.is_player_close then
-        spr(self.press_button_sp, self.x+9, self.y-8)
+        spr(self.butn_sp, self.x+9, self.y-8)
       end
     end
   }

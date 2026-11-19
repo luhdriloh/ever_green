@@ -13,8 +13,6 @@ frame = 0
 -- flags
 solid_flag = 0
 platform_stop_flag = 5
-dialog_post_flag = 6
-player_flag = 7
 death_flag = 2
 
 -- sprite nums
@@ -22,7 +20,6 @@ grass_sprite = 57
 butterfly_sprite = 27
 
 -- flag values for equality checks
-platform_stop_flag_val = 32
 dialog_post_flag_val = 64
 player_flag_val = 128
 
@@ -49,24 +46,24 @@ green = 11
 
 
 -- map platform sprite -> direction
-platform_sprite_to_direction = {}
-platform_sprite_to_direction[34] = { dx=-1, dy=0, color=blue, sp=34 }
-platform_sprite_to_direction[50] = { dx=-1, dy=0, color=red, sp=50 }
+platform_dir = {}
+platform_dir[34] = { dx=-1, dy=0, color=blue, sp=34 }
+platform_dir[50] = { dx=-1, dy=0, color=red, sp=50 }
 
-platform_sprite_to_direction[35] = { dx=0, dy=-1, color=blue, sp=35 }
-platform_sprite_to_direction[51] = { dx=0, dy=-1, color=red, sp=51 }
+platform_dir[35] = { dx=0, dy=-1, color=blue, sp=35 }
+platform_dir[51] = { dx=0, dy=-1, color=red, sp=51 }
 
-platform_sprite_to_direction[36] = { dx=1, dy=0, color=blue, sp=36 }
-platform_sprite_to_direction[52] = { dx=1, dy=0, color=red, sp=52 }
+platform_dir[36] = { dx=1, dy=0, color=blue, sp=36 }
+platform_dir[52] = { dx=1, dy=0, color=red, sp=52 }
 
-platform_sprite_to_direction[37] = { dx=-0, dy=1, color=blue, sp=37 }
-platform_sprite_to_direction[53] = { dx=-0, dy=1, color=red, sp=53 }
+platform_dir[37] = { dx=-0, dy=1, color=blue, sp=37 }
+platform_dir[53] = { dx=-0, dy=1, color=red, sp=53 }
 
 -- yellow platforms
-platform_sprite_to_direction[112] = { dx=-1, dy=0, color=yellow, sp=112 }
-platform_sprite_to_direction[113] = { dx=-0, dy=1, color=yellow, sp=113 }
-platform_sprite_to_direction[114] = { dx=1, dy=0, color=yellow, sp=114 }
-platform_sprite_to_direction[115] = { dx=-0, dy=-1, color=yellow, sp=115 }
+platform_dir[112] = { dx=-1, dy=0, color=yellow, sp=112 }
+platform_dir[113] = { dx=-0, dy=1, color=yellow, sp=113 }
+platform_dir[114] = { dx=1, dy=0, color=yellow, sp=114 }
+platform_dir[115] = { dx=-0, dy=-1, color=yellow, sp=115 }
 
 
 -- button info
@@ -77,7 +74,7 @@ button_info[96] = { sp=96, color=yellow }
 
 -- spike collision bounds by sprite number
 spike_bounds = {}
-spike_bounds[60] = { x=1, y=0, x2=6, y2=2 }
+spike_bounds[60] = { x=1, y=0, x2=6, y2=4 }
 spike_bounds[61] = { x=1, y=7, x2=6, y2=5 }
 
 -- global

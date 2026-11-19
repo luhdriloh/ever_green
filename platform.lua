@@ -76,19 +76,22 @@ function platform_init(player, platforms, x, y, properties)
         if self.old_x != self.x or self.old_y != self.y then
           -- carry riders 
           for r in all(self.riders) do
-            r.x += self.velocity * self.properties.dx
+            if r.stuck_frames != nil then
+              r:move_player_x(self.velocity * self.properties.dx)
+            else
+              r.x += self.velocity * self.properties.dx
+            end
             r.y += self.velocity * self.properties.dy
           end
 
           if player_collide and already_riding == false and not self.player.grounded then
-            self.player.x += self.velocity * self.properties.dx
+            self.player:move_player_x(self.velocity * self.properties.dx)
             self.player.y += self.velocity * self.properties.dy
           end
         end
 
         -- remove players or objects that have jumped off
         self:remove_riders()
-
       end,
 
     -- call after player update to pick up new riders
@@ -116,10 +119,10 @@ function platform_init(player, platforms, x, y, properties)
     end,
 
     draw = function(self)
-      if self.active and self.properties.color != orange or self.properties.color == orange and self.stop_hit == false then
+      if self.active and self.properties.color != yellow or self.properties.color == yellow and self.stop_hit == false then
         pal(7, self.properties.color)
         spr(self.properties.sp, self.x, self.y)
-        pal()
+        pal(0)
       else
         spr(self.properties.sp, self.x, self.y)
       end

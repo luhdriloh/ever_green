@@ -1,4 +1,4 @@
-function equipment_gui_init(player, orbs)
+function orb_gui_init(player, orbs)
   return {
     x_start = 15,
     y_start = 0,

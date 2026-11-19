@@ -5,21 +5,24 @@
 
 function level_manager()
   return {
+    -- set up level items
     player = nil,
     players = nil,
+    orbs = nil,
+    orbs_gui = nil,
+    buttons = nil,
+    platforms = nil,
     door = nil,
     dialog_posts = nil,
-    orbs = nil,
-    equipment_gui = nil,
-    platforms = nil,
-    buttons = nil,
     grass = nil,
+    butterflies = nil,
+    clouds = nil,
+    spikes = nil,
+    callbacks = nil,
+    level = 14,
     background = 0,
-    level = 1,
-    clouds = {},
-    butterflies = {},
-    spikes = {},
-    callbacks = {},
+    level = 14,
+    background = 0,
     transition = nil,
     trans_frame = 0,
     wipe_x = 0,
@@ -36,11 +39,10 @@ function level_manager()
       }
       self.player = plinit()
       self.door = finish_door_init(self.player, function() self:advance_level() end)
-      self.equipment_gui = equipment_gui_init(self.orbs, self.player)
+      self.orbs_gui = orb_gui_init(self.orbs, self.player)
       self.clouds = clouds_init()
       particle_manager = particle_manager()
       particle_manager:init()
-      particle_manager:stars()
       -- for initializing dialog library
       dtb_init(3)
       -- initialize particle renderer
@@ -112,20 +114,16 @@ function level_manager()
       self.players = {}
 
       local level_data = level_start_state[self.level]
-      local count = 1
 
-      for i=1, level_data.teleport_orbs do
-        local new_orb = teleport_orb_init(0, 0, self.platforms, count)
-        count += 1
-        add(self.orbs, new_orb)
+      for i=1,level_data.teleport_orbs do
+        add(self.orbs, teleport_orb_init(0, 0, self.platforms, #self.orbs+1))
       end
 
       add(self.players, self.player)
       for i=1, level_data.clone_orbs do
-        local new_orb = clone_orb_init(0, 0, self.platforms, count)
-        count += 1
-        add(self.players, new_orb.clone)
-        add(self.orbs, new_orb)
+        local o = clone_orb_init(0, 0, self.platforms, #self.orbs+1)
+        add(self.orbs, o)
+        add(self.players, o.clone)
       end
 
       particle_manager.orbs = self.orbs
@@ -138,8 +136,8 @@ function level_manager()
       map_y = flr((self.level - 1) / 8) * 16
       map_y_offset = map_y * 8
 
-      self.equipment_gui:level_set(self.orbs, self.player)
-      self.clouds:level_set()
+      self.orbs_gui:level_set(self.orbs, self.player)
+      self.clouds:level_set(level_data.light_cloud, level_data.dark_cloud)
 
       -- loop through the map space to see if we find any flags that we need to spawn
       for x=0, 15 do
@@ -161,9 +159,9 @@ function level_manager()
           elseif dialog_post_flag_val == flag_val then
             mset(x_coord, y_coord, 0)
             add(self.dialog_posts, dialog_post_init(self.player, sprite_num, x, y, level_data.orb_dialog, self.callbacks[level_data.callback_index]))
-          elseif platform_sprite_to_direction[sprite_num] then
+          elseif platform_dir[sprite_num] then
             mset(x_coord, y_coord, 0)
-            add(self.platforms, platform_init(self.player, self.platforms, x, y, platform_sprite_to_direction[sprite_num]))
+            add(self.platforms, platform_init(self.player, self.platforms, x, y, platform_dir[sprite_num]))
           elseif button_info[sprite_num] then
             mset(x_coord, y_coord, 0)
             add(self.buttons, button_init(self.players, self.platforms, x, y, button_info[sprite_num]))
@@ -175,7 +173,7 @@ function level_manager()
             add(self.butterflies, butterfly_init(x, y))
           elseif spike_bounds[sprite_num] then
             mset(x_coord, y_coord, 0)
-            add(self.spikes, spike_init(self.player, x, y, sprite_num))
+            add(self.spikes, spike_init(self.players, x, y, sprite_num))
           end
         end
       end
@@ -220,7 +218,7 @@ function level_manager()
       foreach(self.butterflies, function(butterfly) butterfly:update() end)
       foreach(self.spikes, function(spike) spike:update() end)
       self.door:update()
-      self.equipment_gui:update()
+      self.orbs_gui:update()
       self.clouds:update()
       particle_manager:update()
       dtb_update()
@@ -250,18 +248,12 @@ function level_manager()
 
       self.player:draw()
 
-      for g in all(self.grass) do
-        g:draw()
-      end
-
-      for orb in all(self.orbs) do
-        orb:draw()
-      end
-
+      foreach(self.grass, function(g) g:draw() end)
+      foreach(self.orbs, function(orb) orb:draw() end)
       foreach(self.butterflies, function(butterfly) butterfly:draw() end)
       foreach(self.spikes, function(spike) spike:draw() end)
 
-      self.equipment_gui:draw()
+      self.orbs_gui:draw()
       map(map_x, map_y, 0, 0, 16, 16, 8)
       dtb_draw()
             
@@ -278,77 +270,100 @@ function level_manager()
     end,
 
     add_clone_orb = function(self)
-      local new_orb = clone_orb_init(0, 0, self.platforms, 1)
-      new_orb.selected = true
-      add(self.players, new_orb.clone)
-      add(self.orbs, new_orb)
+      local orb = clone_orb_init(0, 0, self.platforms, 1)
+      orb.selected = true
+      add(self.players, orb.clone)
+      add(self.orbs, orb)
     end,
   }
 end
 
 -- start position is based on the 16 by 16 map 
+-- 0, 1, 13, 6, 14, 12
 level_start_state = {
-  {
+  { -- 1
     dialog = 1,
     teleport_orbs = 1,
     clone_orbs = 1,
-    background = 1,
+    background = 0,
+    light_cloud = 5,
+    dark_cloud = 1,
   },
-  {
+  { -- 2
     dialog = 2,
     teleport_orbs = 0,
     clone_orbs = 0,
     background = 0,
+    light_cloud = 5,
+    dark_cloud = 1,
   },
-  {
+  { -- 3
     dialog = 3,
     teleport_orbs = 0,
     clone_orbs = 0,
     background = 0,
+    light_cloud = 5,
+    dark_cloud = 1,
   },
-  {
+  { -- 4
     dialog = 4,
     orb_dialog = 5,
     callback_index = 1,
     teleport_orbs = 0,
     clone_orbs = 0,
     background = 0,
+    light_cloud = 5,
+    dark_cloud = 1,
   },
-  {
+  { -- 5
     teleport_orbs = 1,
     clone_orbs = 0,
-    background = 0,
+    background = 1,
+    light_cloud = 14,
+    dark_cloud = 5,
   },
-  {
+  { -- 6
     teleport_orbs = 1,
     clone_orbs = 0,
-    background = 0,
+    background = 1,
+    light_cloud = 14,
+    dark_cloud = 5,
   },
-  {
+  { -- 7
     teleport_orbs = 1,
     clone_orbs = 0,
-    background = 0,
+    background = 1,
+    light_cloud = 14,
+    dark_cloud = 5,
   },
-  {
+  { -- 8
     teleport_orbs = 1,
     clone_orbs = 0,
-    background = 0,
+    background = 1,
+    light_cloud = 14,
+    dark_cloud = 5,
   },
   { -- 9
     dialog = 6,
     teleport_orbs = 2,
     clone_orbs = 0,
-    background = 0,
+    background = 5,
+    light_cloud = 6,
+    dark_cloud = 13,
   },
   { -- 10
     teleport_orbs = 2,
     clone_orbs = 0,
-    background = 0,
+    background = 5,
+    light_cloud = 6,
+    dark_cloud = 13,
   },
   { -- 11
     teleport_orbs = 2,
     clone_orbs = 0,
-    background = 0,
+    background = 5,
+    light_cloud = 6,
+    dark_cloud = 13,
   },
   { -- 12
     dialog = 7,
@@ -356,27 +371,37 @@ level_start_state = {
     callback_index = 2,
     teleport_orbs = 0,
     clone_orbs = 0,
-    background = 0,
+    background = 14,
+    light_cloud = 15,
+    dark_cloud = 6,
   },
   { -- 13
     dialog = 4,
     teleport_orbs = 0,
     clone_orbs = 1,
-    background = 0,
+    background = 14,
+    light_cloud = 15,
+    dark_cloud = 6,
   },
   { -- 14
     teleport_orbs = 0,
     clone_orbs = 2,
-    background = 0,
+    background = 14,
+    light_cloud = 15,
+    dark_cloud = 6,
   },
   { -- 15
     teleport_orbs = 1,
     clone_orbs = 1,
-    background = 0,
+    background = 14,
+    light_cloud = 15,
+    dark_cloud = 6,
   },
   { -- 16
     teleport_orbs = 1,
     clone_orbs = 1,
-    background = 0,
+    background = 15,
+    light_cloud = 7,
+    dark_cloud = 14,
   },
 }
