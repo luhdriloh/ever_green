@@ -16,7 +16,7 @@ function clone_orb_init(x, y, platforms, index)
 
     use = function(self, o)
       if self.clone_active then
-        particle_manager:use_orb(self.clone, { orange, dark_orange }, 1)
+        particle_manager:use_orb(self.clone, { orange, 4 }, 1)
         self.clone.x = -10
         self.clone.y = -10
         self.clone_active = false
@@ -25,7 +25,7 @@ function clone_orb_init(x, y, platforms, index)
       elseif self.placed then
         self.placed = false
         self.clone_active = true
-        particle_manager:use_orb(self, { orange, dark_orange }, 1)
+        particle_manager:use_orb(self, { orange, 4 }, 1)
         self.clone:level_set(self.x, self.y, nil, self.platforms, true, true)
         self.sp = orange_orb_animstate.idle.start
       end
@@ -44,7 +44,7 @@ function clone_orb_init(x, y, platforms, index)
       end
 
       if self.clone.dead then
-        particle_manager:use_orb(self.clone, { orange, dark_orange }, 1)
+        particle_manager:use_orb(self.clone, { orange, 4 }, 1)
         self.clone.x = -20
         self.clone_active = false
         self.clone.dead = false

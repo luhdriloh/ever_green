@@ -180,10 +180,10 @@ function plinit()
         end
       end
       if not self.clone then
-        particle_manager:use_orb(self, { dark_gray, white }, 1)
+        particle_manager:use_orb(self, { 5, 7 }, 1)
         self.x = self.start_x
         self.y = self.start_y
-        particle_manager:use_orb(self, { dark_gray, white }, 2)
+        particle_manager:use_orb(self, { 5, 7 }, 2)
       end
     end,
   }

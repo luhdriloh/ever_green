@@ -19,10 +19,10 @@ function level_manager()
     clouds = nil,
     spikes = nil,
     callbacks = nil,
-    level = 14,
+
+    level = 15,
     background = 0,
-    level = 14,
-    background = 0,
+
     transition = nil,
     trans_frame = 0,
     wipe_x = 0,
@@ -147,40 +147,33 @@ function level_manager()
           local sprite_num = mget(x_coord, y_coord)
           
           local flag_val = fget(sprite_num)
+          mset(x_coord, y_coord, 0)
+
           if finish_door_flag_val == flag_val then
-            mset(x_coord, y_coord, 0)
             self.door:level_set(x, y)
           elseif player_flag_val == flag_val then
-            mset(x_coord, y_coord, 0)
             self.player:level_set(x, y, self.orbs, self.platforms)
           elseif dialog_post_flag_val == flag_val and sprite_num == 10 then
-            mset(x_coord, y_coord, 0)
             add(self.dialog_posts, dialog_post_init(self.player, sprite_num, x, y, level_data.dialog))
           elseif dialog_post_flag_val == flag_val then
-            mset(x_coord, y_coord, 0)
             add(self.dialog_posts, dialog_post_init(self.player, sprite_num, x, y, level_data.orb_dialog, self.callbacks[level_data.callback_index]))
           elseif platform_dir[sprite_num] then
-            mset(x_coord, y_coord, 0)
             add(self.platforms, platform_init(self.player, self.platforms, x, y, platform_dir[sprite_num]))
           elseif button_info[sprite_num] then
-            mset(x_coord, y_coord, 0)
             add(self.buttons, button_init(self.players, self.platforms, x, y, button_info[sprite_num]))
           elseif grass_sprite == sprite_num then
-            mset(x_coord, y_coord, 0)
             add(self.grass, grass_init(self.player, x, y))
           elseif butterfly_sprite == sprite_num then
-            mset(x_coord, y_coord, 0)
             add(self.butterflies, butterfly_init(x, y))
           elseif spike_bounds[sprite_num] then
-            mset(x_coord, y_coord, 0)
             add(self.spikes, spike_init(self.players, x, y, sprite_num))
+          else
+            -- if this is not rendered dynamically put the sprite back
+            mset(x_coord, y_coord, sprite_num)
           end
         end
       end
       
-      -- give buttons a reference to all the platforms
-
-      -- self.player:level_set(level_data.x, level_data.y, orbs)
       self.background = level_data.background
     end,
 
@@ -192,35 +185,21 @@ function level_manager()
         return
       end
 
-
-      for button in all(self.buttons) do
-        button:update()
-      end
-
       self.player:update()
 
-      for orb in all(self.orbs) do
-        orb:update()
-      end
-
-      for platform in all(self.platforms) do
-        platform:update()
-      end
-
-      for dialog_post in all(self.dialog_posts) do
-        dialog_post:update()
-      end
-
-      for g in all(self.grass) do
-        g:update()
-      end
-
+      foreach(self.buttons, function(button) button:update() end)
+      foreach(self.orbs, function(orb) orb:update() end)
+      foreach(self.platforms, function(platform) platform:update() end)
+      foreach(self.dialog_posts, function(dialog) dialog:update() end)
+      foreach(self.grass, function(g) g:update() end)
       foreach(self.butterflies, function(butterfly) butterfly:update() end)
       foreach(self.spikes, function(spike) spike:update() end)
+
       self.door:update()
       self.orbs_gui:update()
       self.clouds:update()
       particle_manager:update()
+
       dtb_update()
     end,
 
@@ -232,20 +211,13 @@ function level_manager()
 
       map(map_x, map_y, 0, 0, 16, 16, 147)
 
-      for platform in all(self.platforms) do
-        platform:draw()
-      end
-
-      for button in all(self.buttons) do
-        button:draw()
-      end
+      foreach(self.platforms, function(platform) platform:draw() end)
+      foreach(self.buttons, function(button) button:draw() end)      
 
       self.door:draw()
       
-      for dialog_post in all(self.dialog_posts) do
-        dialog_post:draw()
-      end
-
+      foreach(self.dialog_posts, function(dialog) dialog:draw() end)
+      
       self.player:draw()
 
       foreach(self.grass, function(g) g:draw() end)
@@ -264,9 +236,9 @@ function level_manager()
 
     -- callbacks
     add_teleport_orb = function(self)
-      local new_orb = teleport_orb_init(0, 0, self.platforms, 1)
-      new_orb.selected = true
-      add(self.orbs, new_orb)
+      local orb = teleport_orb_init(0, 0, self.platforms, 1)
+      orb.selected = true
+      add(self.orbs, orb)
     end,
 
     add_clone_orb = function(self)

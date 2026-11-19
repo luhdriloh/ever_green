@@ -28,22 +28,15 @@ finish_door_flag_val = 6
 -- map values
 -- map_x and map_y == TILE SPACE == 1 tile is 8 PIXELS
 -- TODO: rename these
-map_x = 0
-map_x_offset = 0
-map_y = 0
-map_y_offset = 0
+map_x, map_x_offset = 0, 0
+map_y, map_y_offset = 0, 0
 
 -- map platform color to activated color
-dark_gray = 5
-white = 7
 red = 8
 blue = 12
 dark_orange = 4
 orange = 9
 yellow = 10
-dark_green = 3
-green = 11
-
 
 -- map platform sprite -> direction
 platform_dir = {}
@@ -154,6 +147,16 @@ function check_grounded(x, y)
   return a or b
 end
 
+function check_dynamically_grounded(o, o2)
+  local x = o.x + map_x_offset
+  local y = o.y + map_y_offset
+  local x2 = o2.x + map_x_offset
+  local y2 = o2.y + map_y_offset
+  local b = y + 8
+  return y2 <= b and y2 >= b - 6
+    and x + 2 <= x2 + 7 and x + 5 >= x2
+end
+
 function update_frame(o, animstate)
   o.step += 1
   if animstate.per_frame == 0 then
@@ -231,31 +234,4 @@ function check_dynamic_collisions(o, o2, x1_offset, y1_offset, x2_offset, y2_off
 
   -- AABB overlap: all four conditions must be true
   return left1 <= right2 and right1 >= left2 and top1 <= bottom2 and bottom1 >= top2
-end
-
-function check_dynamically_grounded(o, o2, x1_offset, x2_offset, y2_offset)
-  local x = o.x + map_x_offset
-  local y = o.y + map_y_offset
-  local x2 = o2.x + map_x_offset
-  local y2 = o2.y + map_y_offset
-
-  x1_offset = x1_offset or 2
-  x2_offset = x2_offset or 5
-  y2_offset = y2_offset or 8 -- 8 because we want to check that the block right below the character is grounded
-
-  -- player's hitbox bottom edge
-  local bottom1 = y + y2_offset
-  local top2 = y2
-
-  if top2 > bottom1 or top2 < bottom1 - 6 then
-    return false
-  end
-
-  -- horizontal overlap (same logic as check_dynamic_collisions)
-  local left1  = x + x1_offset
-  local right1 = x + x2_offset
-  local left2  = x2
-  local right2 = x2 + 7
-
-  return left1 <= right2 and right1 >= left2
 end
