@@ -219,3 +219,12 @@ function check_dynamic_collisions(o, o2, x1_offset, y1_offset, x2_offset, y2_off
   -- AABB overlap: all four conditions must be true
   return left1 <= right2 and right1 >= left2 and top1 <= bottom2 and bottom1 >= top2
 end
+
+-- helpers
+function update_helper(t)
+  foreach(t, function(o) o:update() end)
+end
+
+function draw_helper(t)
+  foreach(t, function(o) o:draw() end)
+end

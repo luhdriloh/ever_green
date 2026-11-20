@@ -1,6 +1,6 @@
 function orb_gui_init(player, orbs)
   return {
-    x_start = 15,
+    x_start = 120,
     y_start = 0,
     outline_sp = 29,
     player = player,
@@ -15,14 +15,13 @@ function orb_gui_init(player, orbs)
     end,
 
     draw = function(self)
-      local x = self.x_start * 8
-      local y = self.y_start * 8
+      local y = self.y_start
 
       for orb in all(self.orbs) do
-        spr(orb.sp, x, y)
+        spr(orb.sp, self.x_start, y)
         if orb.selected then
           if orb.placed or frame % 30 < 15 then
-            spr(self.outline_sp, x, y)
+            spr(self.outline_sp, self.x_start, y)
           end
           
           local clone_active = orb.clone_active != nil and orb.clone_active or false

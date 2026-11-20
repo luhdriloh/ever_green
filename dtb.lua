@@ -129,7 +129,7 @@ function dtb_draw()
         
         local by = dtb_y - dislineslength*8
         rectfill(2, by, 125, dtb_y+8, 1)
-        rect(1, by-1, 126, dtb_y+9, 13)  -- NEW: white border
+        rect(1, by-1, 126, dtb_y+9, 13)
         if dtb_curline>0 and #dtb_dislines[#dtb_dislines]==#dtb_queu[1][dtb_curline] then
             print("next\x8e", 102, dtb_y+2, 7)
         end

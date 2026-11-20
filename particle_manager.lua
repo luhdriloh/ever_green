@@ -31,9 +31,9 @@ function particle_manager()
     end,
 
     draw = function(self)
-      foreach(self.land_emitters, function(obj) obj.emitter:draw() end)
-      foreach(self.orb_emitters , function(obj) obj:draw() end)
-      foreach(self.star_emitters, function(obj) obj:draw() end)
+      draw_helper(self.land_emitters)
+      draw_helper(self.orb_emitters )
+      draw_helper(self.star_emitters)
     end,
 
     -- set up emitter for when the player lands

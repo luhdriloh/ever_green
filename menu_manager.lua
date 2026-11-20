@@ -1,8 +1,10 @@
+
 function menu()
   local m = {}
   m.items = {"start", "level select", "how to play"}
   m.selected = 0
   m.x_wobble = 0
+  m.butterflies = {}
 
   -- box layout
   m.top_y = 32
@@ -13,6 +15,9 @@ function menu()
 
   function m:init()
     self.selected = 0
+    for i=1,(2+rnd(4)) do
+      add(self.butterflies, butterfly_init(1+rnd(14), 1+rnd(12)))
+    end
     clouds:level_set(5, 1)
   end
 
@@ -35,18 +40,19 @@ function menu()
       
     clouds:update()
     particle_manager:update()
+    update_helper(self.butterflies)
   end
 
   function m:draw()
     cls(0)
     clouds:draw()
     particle_manager:draw()
+    draw_helper(self.butterflies)
 
     -- y == 13: stratified scatter
-    local flowers = {37, 57, 103}
-    for i = 1, #flowers do
-      spr(45, flowers[i], 13 * 8)
-    end
+    foreach({37, 57, 103}, function(flower) spr(45, flower, 13 * 8) end)
+    foreach({3, 68}, function(grass) spr(57, grass, 13 * 8) end)
+
 
     for x = 0, 15 do
       for y = 0, 15 do
@@ -84,7 +90,7 @@ function menu()
         print(text, tx, y, 7)
       end
     end
+    -- print("up/down select  confirm", 24, 104, 8)
   end
-
   return m
 end

@@ -19,7 +19,7 @@ function level_manager()
     spikes = nil,
     callbacks = nil,
 
-    level = 0,
+    level = 11,
     background = 0,
 
     transition = nil,
@@ -47,6 +47,17 @@ function level_manager()
       -- initialize particle renderer
       prev_time = time()
       delta_time = time() - prev_time
+
+      local S="1,0,0,0,0,0,5,1,2,0,0,0,0,0,5,1,3,0,0,0,0,0,5,1,4,5,1,0,0,0,5,1,0,0,0,1,0,1,14,5,0,0,0,1,0,1,14,5,0,0,0,1,0,1,14,5,0,0,0,1,0,1,14,5,6,0,0,2,0,5,6,13,0,0,0,2,0,5,6,13,0,0,0,2,0,5,6,13,7,8,2,0,0,14,15,6,4,0,0,0,1,14,15,6,0,0,0,0,2,14,15,6,0,0,0,1,1,14,15,6,0,0,0,1,1,14,15,6"
+      local K={"dialog","orb_dialog","callback_index","teleport_orbs","clone_orbs","background","light_cloud","dark_cloud"}
+      local T=split(S)
+      local L={}
+      for i=1,16 do
+        local t={}
+        for j=1,8 do t[K[j]]=T[(i-1)*8+j] end
+        L[i]=t
+      end
+      level_start_state=L
     end,
 
     advance_level = function(self)
@@ -91,7 +102,7 @@ function level_manager()
         rectfill(127-g, 0, 127, 127, 0)
       elseif self.transition == "text" then
         rectfill(0, 0, 127, 127, 0)
-        print("level " .. self.pending_level, 48, 60, 15)
+        print("level " .. self.pending_level, 48, 60, 7)
       end
     end,
 
@@ -180,18 +191,17 @@ function level_manager()
 
       self.player:update()
 
-      foreach(self.buttons, function(button) button:update() end)
-      foreach(self.orbs, function(orb) orb:update() end)
-      foreach(self.platforms, function(platform) platform:update() end)
-      foreach(self.dialog_posts, function(dialog) dialog:update() end)
-      foreach(self.butterflies, function(butterfly) butterfly:update() end)
-      foreach(self.spikes, function(spike) spike:update() end)
+      update_helper(self.buttons)
+      update_helper(self.orbs)
+      update_helper(self.platforms)
+      update_helper(self.dialog_posts)
+      update_helper(self.butterflies)
+      update_helper(self.spikes)
 
       self.door:update()
       self.orbs_gui:update()
       clouds:update()
       particle_manager:update()
-
       dtb_update()
     end,
 
@@ -203,18 +213,17 @@ function level_manager()
         particle_manager:draw()
 
         map(map_x, map_y, 0, 0, 16, 16, 147)
-
-        foreach(self.platforms, function(platform) platform:draw() end)
-        foreach(self.buttons, function(button) button:draw() end)            
-        foreach(self.dialog_posts, function(dialog) dialog:draw() end)
+        draw_helper(self.platforms)
+        draw_helper(self.dialog_posts)
         
         self.door:draw()
         self.player:draw()
 
-        foreach(self.grass, function(g) g:draw() end)
-        foreach(self.orbs, function(orb) orb:draw() end)
-        foreach(self.butterflies, function(butterfly) butterfly:draw() end)
-        foreach(self.spikes, function(spike) spike:draw() end)
+        draw_helper(self.buttons)
+        draw_helper(self.grass)
+        draw_helper(self.orbs)
+        draw_helper(self.butterflies)
+        draw_helper(self.spikes)
 
         self.orbs_gui:draw()
         map(map_x, map_y, 0, 0, 16, 16, 8)
@@ -242,130 +251,131 @@ function level_manager()
   }
 end
 
+-- compressed this in init to save on tokens
 -- start position is based on the 16 by 16 map 
 -- 0, 1, 13, 6, 14, 12
-level_start_state = {
-  { -- 1
-    dialog = 1,
-    teleport_orbs = 0,
-    clone_orbs = 0,
-    background = 0,
-    light_cloud = 5,
-    dark_cloud = 1,
-  },
-  { -- 2
-    dialog = 2,
-    teleport_orbs = 0,
-    clone_orbs = 0,
-    background = 0,
-    light_cloud = 5,
-    dark_cloud = 1,
-  },
-  { -- 3
-    dialog = 3,
-    teleport_orbs = 0,
-    clone_orbs = 0,
-    background = 0,
-    light_cloud = 5,
-    dark_cloud = 1,
-  },
-  { -- 4
-    dialog = 4,
-    orb_dialog = 5,
-    callback_index = 1,
-    teleport_orbs = 0,
-    clone_orbs = 0,
-    background = 0,
-    light_cloud = 5,
-    dark_cloud = 1,
-  },
-  { -- 5
-    teleport_orbs = 1,
-    clone_orbs = 0,
-    background = 1,
-    light_cloud = 14,
-    dark_cloud = 5,
-  },
-  { -- 6
-    teleport_orbs = 1,
-    clone_orbs = 0,
-    background = 1,
-    light_cloud = 14,
-    dark_cloud = 5,
-  },
-  { -- 7
-    teleport_orbs = 1,
-    clone_orbs = 0,
-    background = 1,
-    light_cloud = 14,
-    dark_cloud = 5,
-  },
-  { -- 8
-    teleport_orbs = 1,
-    clone_orbs = 0,
-    background = 1,
-    light_cloud = 14,
-    dark_cloud = 5,
-  },
-  { -- 9
-    dialog = 6,
-    teleport_orbs = 2,
-    clone_orbs = 0,
-    background = 5,
-    light_cloud = 6,
-    dark_cloud = 13,
-  },
-  { -- 10
-    teleport_orbs = 2,
-    clone_orbs = 0,
-    background = 5,
-    light_cloud = 6,
-    dark_cloud = 13,
-  },
-  { -- 11
-    teleport_orbs = 2,
-    clone_orbs = 0,
-    background = 5,
-    light_cloud = 6,
-    dark_cloud = 13,
-  },
-  { -- 12
-    dialog = 7,
-    orb_dialog = 8,
-    callback_index = 2,
-    teleport_orbs = 0,
-    clone_orbs = 0,
-    background = 14,
-    light_cloud = 15,
-    dark_cloud = 6,
-  },
-  { -- 13
-    dialog = 4,
-    teleport_orbs = 0,
-    clone_orbs = 1,
-    background = 14,
-    light_cloud = 15,
-    dark_cloud = 6,
-  },
-  { -- 14
-    teleport_orbs = 0,
-    clone_orbs = 2,
-    background = 14,
-    light_cloud = 15,
-    dark_cloud = 6,
-  },
-  { -- 15
-    teleport_orbs = 1,
-    clone_orbs = 1,
-    background = 14,
-    light_cloud = 15,
-    dark_cloud = 6,
-  },
-  { -- 16
-    teleport_orbs = 1,
-    clone_orbs = 1,
-    background = 15,
-    light_cloud = 7,
-    dark_cloud = 14,
-  },
-}
+-- level_start_state = {
+--   { -- 1
+--     dialog = 1,
+--     teleport_orbs = 0,
+--     clone_orbs = 0,
+--     background = 0,
+--     light_cloud = 5,
+--     dark_cloud = 1,
+--   },
+--   { -- 2
+--     dialog = 2,
+--     teleport_orbs = 0,
+--     clone_orbs = 0,
+--     background = 0,
+--     light_cloud = 5,
+--     dark_cloud = 1,
+--   },
+--   { -- 3
+--     dialog = 3,
+--     teleport_orbs = 0,
+--     clone_orbs = 0,
+--     background = 0,
+--     light_cloud = 5,
+--     dark_cloud = 1,
+--   },
+--   { -- 4
+--     dialog = 4,
+--     orb_dialog = 5,
+--     callback_index = 1,
+--     teleport_orbs = 0,
+--     clone_orbs = 0,
+--     background = 0,
+--     light_cloud = 5,
+--     dark_cloud = 1,
+--   },
+--   { -- 5
+--     teleport_orbs = 1,
+--     clone_orbs = 0,
+--     background = 1,
+--     light_cloud = 14,
+--     dark_cloud = 5,
+--   },
+--   { -- 6
+--     teleport_orbs = 1,
+--     clone_orbs = 0,
+--     background = 1,
+--     light_cloud = 14,
+--     dark_cloud = 5,
+--   },
+--   { -- 7
+--     teleport_orbs = 1,
+--     clone_orbs = 0,
+--     background = 1,
+--     light_cloud = 14,
+--     dark_cloud = 5,
+--   },
+--   { -- 8
+--     teleport_orbs = 1,
+--     clone_orbs = 0,
+--     background = 1,
+--     light_cloud = 14,
+--     dark_cloud = 5,
+--   },
+--   { -- 9
+--     dialog = 6,
+--     teleport_orbs = 2,
+--     clone_orbs = 0,
+--     background = 5,
+--     light_cloud = 6,
+--     dark_cloud = 13,
+--   },
+--   { -- 10
+--     teleport_orbs = 2,
+--     clone_orbs = 0,
+--     background = 5,
+--     light_cloud = 6,
+--     dark_cloud = 13,
+--   },
+--   { -- 11
+--     teleport_orbs = 2,
+--     clone_orbs = 0,
+--     background = 5,
+--     light_cloud = 6,
+--     dark_cloud = 13,
+--   },
+--   { -- 12
+--     dialog = 7,
+--     orb_dialog = 8,
+--     callback_index = 2,
+--     teleport_orbs = 0,
+--     clone_orbs = 0,
+--     background = 14,
+--     light_cloud = 15,
+--     dark_cloud = 6,
+--   },
+--   { -- 13
+--     dialog = 4,
+--     teleport_orbs = 0,
+--     clone_orbs = 1,
+--     background = 14,
+--     light_cloud = 15,
+--     dark_cloud = 6,
+--   },
+--   { -- 14
+--     teleport_orbs = 0,
+--     clone_orbs = 2,
+--     background = 14,
+--     light_cloud = 15,
+--     dark_cloud = 6,
+--   },
+--   { -- 15
+--     teleport_orbs = 1,
+--     clone_orbs = 1,
+--     background = 14,
+--     light_cloud = 15,
+--     dark_cloud = 6,
+--   },
+--   { -- 16
+--     teleport_orbs = 1,
+--     clone_orbs = 1,
+--     background = 14,
+--     light_cloud = 15,
+--     dark_cloud = 6,
+--   },
+-- }

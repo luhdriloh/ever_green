@@ -34,7 +34,6 @@ function butterfly_init(x, y)
 				self.sp = 55 - self.sp
 			end
 
-			-- record trail every 2 frames
 			local dx = self.x - self.last_trail_x
 			local dy = self.y - self.last_trail_y
 			if dx*dx + dy*dy >= 16 then  -- 3^2 = 9
