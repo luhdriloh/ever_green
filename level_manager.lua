@@ -16,11 +16,10 @@ function level_manager()
     dialog_posts = nil,
     grass = nil,
     butterflies = nil,
-    clouds = nil,
     spikes = nil,
     callbacks = nil,
 
-    level = 3,
+    level = 0,
     background = 0,
 
     transition = nil,
@@ -40,7 +39,7 @@ function level_manager()
       self.player = plinit()
       self.door = finish_door_init(self.player, function() self:advance_level() end)
       self.orbs_gui = orb_gui_init(self.orbs, self.player)
-      self.clouds = clouds_init()
+      clouds = clouds_init()
       particle_manager = particle_manager()
       particle_manager:init()
       -- for initializing dialog library
@@ -131,7 +130,7 @@ function level_manager()
       map_y_offset = map_y * 8
 
       self.orbs_gui:level_set(self.orbs, self.player)
-      self.clouds:level_set(level_data.light_cloud, level_data.dark_cloud)
+      clouds:level_set(level_data.light_cloud, level_data.dark_cloud)
 
       -- loop through the map space to see if we find any flags that we need to spawn
       for x=0, 15 do
@@ -185,41 +184,42 @@ function level_manager()
       foreach(self.orbs, function(orb) orb:update() end)
       foreach(self.platforms, function(platform) platform:update() end)
       foreach(self.dialog_posts, function(dialog) dialog:update() end)
-      foreach(self.grass, function(g) g:update() end)
       foreach(self.butterflies, function(butterfly) butterfly:update() end)
       foreach(self.spikes, function(spike) spike:update() end)
 
       self.door:update()
       self.orbs_gui:update()
-      self.clouds:update()
+      clouds:update()
       particle_manager:update()
 
       dtb_update()
     end,
 
     draw = function(self)
-      cls(self.background)
+      if self.transition == nil or self.level != 0 then
+        cls(self.background)
 
-      self.clouds:draw()
-      particle_manager:draw()
+        clouds:draw()
+        particle_manager:draw()
 
-      map(map_x, map_y, 0, 0, 16, 16, 147)
+        map(map_x, map_y, 0, 0, 16, 16, 147)
 
-      foreach(self.platforms, function(platform) platform:draw() end)
-      foreach(self.buttons, function(button) button:draw() end)            
-      foreach(self.dialog_posts, function(dialog) dialog:draw() end)
-      
-      self.door:draw()
-      self.player:draw()
+        foreach(self.platforms, function(platform) platform:draw() end)
+        foreach(self.buttons, function(button) button:draw() end)            
+        foreach(self.dialog_posts, function(dialog) dialog:draw() end)
+        
+        self.door:draw()
+        self.player:draw()
 
-      foreach(self.grass, function(g) g:draw() end)
-      foreach(self.orbs, function(orb) orb:draw() end)
-      foreach(self.butterflies, function(butterfly) butterfly:draw() end)
-      foreach(self.spikes, function(spike) spike:draw() end)
+        foreach(self.grass, function(g) g:draw() end)
+        foreach(self.orbs, function(orb) orb:draw() end)
+        foreach(self.butterflies, function(butterfly) butterfly:draw() end)
+        foreach(self.spikes, function(spike) spike:draw() end)
 
-      self.orbs_gui:draw()
-      map(map_x, map_y, 0, 0, 16, 16, 8)
-      dtb_draw()
+        self.orbs_gui:draw()
+        map(map_x, map_y, 0, 0, 16, 16, 8)
+        dtb_draw()
+      end
             
       if self.transition then 
         self:draw_transition()
@@ -247,8 +247,8 @@ end
 level_start_state = {
   { -- 1
     dialog = 1,
-    teleport_orbs = 1,
-    clone_orbs = 1,
+    teleport_orbs = 0,
+    clone_orbs = 0,
     background = 0,
     light_cloud = 5,
     dark_cloud = 1,

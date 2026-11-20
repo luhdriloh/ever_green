@@ -71,6 +71,7 @@ spike_bounds[61] = { x=1, y=7, x2=6, y2=5 }
 
 -- global
 particle_manager = nil
+clouds = nil
 
 function apply_gravity_2(o)
   if o.grounded then
