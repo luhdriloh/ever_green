@@ -28,13 +28,13 @@ function teleport_orb_init(x, y, platforms, index)
         o.x = self.x
         o.y = self.y
         o.dy = 0
-        self.sp = green_orb_animstate.idle.start
+        self.sp = green_orb_anim.start
       end
     end,
 
     update = function(self)
       if self.placed then
-        update_frame(self, green_orb_animstate.idle)
+        update_frame(self, green_orb_anim)
         apply_gravity_2(self)
       end
     end,
@@ -50,11 +50,8 @@ function teleport_orb_init(x, y, platforms, index)
   }
 end
 
-green_orb_animstate = {
-  idle = {
-    name = "idle",
-    start = 13,
-    last = 14,
-    per_frame = 10,
-  },
+green_orb_anim = {
+  start = 13,
+  last = 14,
+  per_frame = 10,
 }

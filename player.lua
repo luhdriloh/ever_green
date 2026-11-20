@@ -12,7 +12,7 @@ function plinit()
     on_platform = false,
     freeze = false,
     active_orb = 1,
-    platforms = {},
+    platforms = nil,
     clone = false,
     stuck_frames = 0,
     dead = false,
@@ -23,8 +23,8 @@ function plinit()
     switch_orbs_frames = 0, -- keeps track of the switch orb animation 3 frames long
 
     -- animation values
-    state = character_animstate.idle,
-    sp = character_animstate.idle.start,
+    state = character_idle,
+    sp = character_idle.start,
     step = 0,
     orbs = nil,
 
@@ -45,17 +45,17 @@ function plinit()
     end,
 
     update = function(self)
-      local newstate = character_animstate.idle
+      local newstate = character_idle
 
       -- input
       if btn(0) then
         self.dx = -1
         self.flx = false
-        newstate = character_animstate.walk
+        newstate = character_walk
       elseif btn(1) then
         self.dx = 1
         self.flx = true
-        newstate = character_animstate.walk
+        newstate = character_walk
       else
         self.dx = 0
       end
@@ -142,9 +142,9 @@ function plinit()
 
       -- animation state
       if self.dy < 0 then
-        newstate = character_animstate.jump
+        newstate = character_jump
       elseif self.dy > 0 and not self.grounded then
-        newstate = character_animstate.fall
+        newstate = character_fall
       end
 
       -- jump land particles
@@ -225,27 +225,28 @@ function plinit()
 end
 
 -- states
-character_animstate = {
-  idle = {
-    name = "idle",
-    start = 16,
-    last = 17,
-    per_frame = 9
-  },
-  walk = {
-    name = "walk",
-    start = 1,
-    last = 6,
-    per_frame = 2
-  },
-  jump = {
-    name = "jump",
-    start = 19, 
-    per_frame = 0
-  },
-  fall = {
-    name = "fall",
-    start = 20,
-    per_frame = 0
-  }
+character_idle = {
+  name = "idle",
+  start = 16,
+  last = 17,
+  per_frame = 9
+}
+
+character_walk = {
+  name = "walk",
+  start = 1,
+  last = 6,
+  per_frame = 2
+}
+
+character_jump = {
+  name = "jump",
+  start = 19, 
+  per_frame = 0
+}
+
+character_fall = {
+  name = "fall",
+  start = 20,
+  per_frame = 0
 }

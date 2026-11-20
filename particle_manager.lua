@@ -31,8 +31,8 @@ function particle_manager()
     end,
 
     draw = function(self)
-      draw_helper(self.land_emitters)
-      draw_helper(self.orb_emitters )
+      foreach(self.land_emitters, function(obj) obj.emitter:draw() end)
+      draw_helper(self.orb_emitters)
       draw_helper(self.star_emitters)
     end,
 
@@ -84,7 +84,7 @@ function particle_manager()
       ps_set_rnd_colour(burst, true)
       add(self.orb_emitters, burst)
 
-      -- We have 2 orbs - create 2 orbs
+      -- We have 2 orbs - create 2 emitters
       add(self.orb_emitters, burst.clone(burst))
     end,
 

@@ -10,14 +10,14 @@ function dialog_post_init(player, sp, x, y, counter, activate_callback)
     dialogue_active = false,
     is_player_close = false,
     dialog_text = {
-      "😐 hi little forest gnome, i'm the great forest diety 웃 and i need your help getting back the forests light. go through the tree light portals to start collecting light.",
-      "press x to jump on the ledges",
-      "try standing on the blue button to see if anything happens",
-      "have some of my teleport powers. go grab that green teleport orb",
-      "press 🅾️ to place down the teleport orb. press 🅾️ again to teleport to it. the top right corner shows you your active power orb",
-      "you're going to need another power orb. i've put it in your inventory. press ⬇️ to cycle through your orbs. look at your hands or the big arrow to see which orb is active",
-      "go grab that orange clone orb",
-      "press 🅾️ to place down the clone orb. press 🅾️ again to activate your clone. press 🅾️ a third time to deactivate your clone and return it to your inventory.",
+      "😐 you finally woke up little forest gnome. i'm the great forest diety 웃 and i need your help getting back this forests light. collect light by reaching all the tree light portals in the forest!",
+      "press ❎ to jump on the ledges. also if you're ever stuck hold down ⬆️ to respawn. try out your new skilz now!",
+      "try standing on the blue button to see if anything happens.",
+      "have some of my teleport powers. go grab that green teleport orb.",
+      "press 🅾️ to place down the teleport orb and again to teleport to it. you can also look at yourr orb inventory on the top right.",
+      "you're going to need another power orb. i've put it in your inventory. remember, you can press ⬇️ to cycle through your orbs. look at your hands or the big arrow to see which orb is active.",
+      "go grab that orange clone orb!",
+      "press 🅾️ to place down the clone orb, again to activate your clone, and a third time to deactivate your clone and return it to your inventory!",
     },
 
     update = function(self)

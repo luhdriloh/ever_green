@@ -19,14 +19,11 @@ function level_manager()
     spikes = nil,
     callbacks = nil,
 
-    level = 11,
+    level = 0,
     background = 0,
 
     transition = nil,
-    trans_frame = 0,
-    wipe_x = 0,
-    wipe_dir = 1,
-    show_text = false,
+    from_menu = false,
     text_frame = 0,
     pending_level = nil,
     grow = 0,
@@ -60,7 +57,9 @@ function level_manager()
       level_start_state=L
     end,
 
-    advance_level = function(self)
+    advance_level = function(self, from_menu, level)
+      self.from_menu = from_menu or self.from_menu
+      self.level = level and level or self.level
       self.pending_level = self.level + 1
       self.grow = 0
       self.transition = "out"
@@ -82,6 +81,7 @@ function level_manager()
           self:create_level()
           self.grow = 64
           self.transition = "in"
+          self.from_menu = false
         end
       elseif self.transition == "in" then
         self.grow -= 4
@@ -150,16 +150,15 @@ function level_manager()
           local y_coord = y + map_y
           local sprite_num = mget(x_coord, y_coord)
           
-          local flag_val = fget(sprite_num)
           mset(x_coord, y_coord, 0)
 
-          if finish_door_flag_val == flag_val then
+          if sprite_num == 11 then
             self.door:level_set(x, y)
-          elseif player_flag_val == flag_val then
+          elseif sprite_num == 16 then
             self.player:level_set(x, y, self.orbs, self.platforms)
-          elseif dialog_post_flag_val == flag_val and sprite_num == 10 then
+          elseif sprite_num == 10 then
             add(self.dialog_posts, dialog_post_init(self.player, sprite_num, x, y, level_data.dialog))
-          elseif dialog_post_flag_val == flag_val then
+          elseif sprite_num == 13 or sprite_num == 30 then
             add(self.dialog_posts, dialog_post_init(self.player, sprite_num, x, y, level_data.orb_dialog, self.callbacks[level_data.callback_index]))
           elseif platform_dir[sprite_num] then
             add(self.platforms, platform_init(self.player, self.platforms, x, y, platform_dir[sprite_num]))
@@ -206,7 +205,8 @@ function level_manager()
     end,
 
     draw = function(self)
-      if self.transition == nil or self.level != 0 then
+      if self.transition == nil or not self.from_menu then
+
         cls(self.background)
 
         clouds:draw()

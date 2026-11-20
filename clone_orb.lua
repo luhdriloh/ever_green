@@ -27,7 +27,7 @@ function clone_orb_init(x, y, platforms, index)
         self.clone_active = true
         particle_manager:use_orb(self, { orange, 4 }, 1)
         self.clone:level_set(self.x, self.y, nil, self.platforms, true, true)
-        self.sp = orange_orb_animstate.idle.start
+        self.sp = orange_orb_anim.start
       end
     end,
 
@@ -39,7 +39,7 @@ function clone_orb_init(x, y, platforms, index)
 
     update = function(self)
       if self.placed then
-        update_frame(self, orange_orb_animstate.idle)
+        update_frame(self, orange_orb_anim)
         apply_gravity_2(self)
       end
 
@@ -78,11 +78,8 @@ function clone_orb_init(x, y, platforms, index)
   }
 end
 
-orange_orb_animstate = {
-  idle = {
-    name = "idle",
-    start = 30,
-    last = 31,
-    per_frame = 10,
-  },
+orange_orb_anim = {
+  start = 30,
+  last = 31,
+  per_frame = 10,
 }

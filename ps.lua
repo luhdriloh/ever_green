@@ -42,7 +42,7 @@ function particle:set_values(x, y, gravity, colours, sprites, life, angle, speed
  self.size, self.size_initial, self.size_final = size_initial, size_initial, size_final
 
  self.sprites = sprites
- if (self.sprites ~= nil) then
+ if self.sprites ~= nil then
   self.sprite_time = (1 / #self.sprites) * self.life_initial
   self.current_sprite_time = self.sprite_time
   self.sprites_index = 1
@@ -52,12 +52,12 @@ function particle:set_values(x, y, gravity, colours, sprites, life, angle, speed
  end
 
  self.colours = colours
- if (colours ~= nil) then
+ if colours ~= nil then
   self.colour_time = (1 / #self.colours) * self.life_initial
   self.current_colour_time = self.colour_time
   self.colours_index = 1
   self.colour = self.colours[self.colours_index]
-  if (self.colour == nil) then stop() end -- TODO: somehow the colour ends up being nil
+  if self.colour == nil then stop() end -- TODO: somehow the colour ends up being nil
  else
   self.colour = nil
  end
@@ -72,22 +72,22 @@ function particle:update(dt)
  end
 
  -- size over lifetime
- if (self.size_initial ~= self.size_final) then
+ if self.size_initial ~= self.size_final then
   -- take the difference of original and future, divided by time, multiplied by delta time
   self.size = self.size - ((self.size_initial-self.size_final)/self.life_initial)*dt
  end
 
  -- velocity over lifetime
- if (self.vel_initial.x ~= self.vel_final.x) then
+ if self.vel_initial.x ~= self.vel_final.x then
   -- take the difference of original and future, divided by time, multiplied by delta time
   self.velocity.x = self.velocity.x - ((self.vel_initial.x-self.vel_final.x)/self.life_initial)*dt
   self.velocity.y = self.velocity.y - ((self.vel_initial.y-self.vel_final.y)/self.life_initial)*dt
  end
 
  -- changing the colour
- if (self.colours ~= nil and #self.colours > 1) then
+ if self.colours ~= nil and #self.colours > 1 then
   self.current_colour_time -= dt
-  if (self.current_colour_time < 0) then
+  if self.current_colour_time < 0 then
    self.colours_index += 1
    self.colour = self.colours[self.colours_index]
    self.current_colour_time = self.colour_time
@@ -95,9 +95,9 @@ function particle:update(dt)
  end
 
  -- changing the sprite
- if (self.sprites ~= nil and #self.sprites > 1) then
+ if self.sprites ~= nil and #self.sprites > 1 then
   self.current_sprite_time -= dt
-  if (self.current_sprite_time < 0) then
+  if self.current_sprite_time < 0 then
    self.sprites_index += 1
    self.sprite = self.sprites[self.sprites_index]
    self.current_sprite_time = self.sprite_time
@@ -105,7 +105,7 @@ function particle:update(dt)
  end
 
  -- moving the particle
- if (self.life > 0) then
+ if self.life > 0 then
   self.pos.x = self.pos.x + self.velocity.x * dt
   self.pos.y = self.pos.y + self.velocity.y * dt
  else
@@ -115,9 +115,9 @@ end
 
 -- draws a circle with it's values
 function particle:draw()
- if (self.sprite ~= nil) then
+ if self.sprite ~= nil then
   spr(self.sprite, self.pos.x, self.pos.y)
- elseif (self.colour ~= nil) then
+ elseif self.colour ~= nil then
   circfill(self.pos.x, self.pos.y, self.size, self.colour)
  end
 end
@@ -144,8 +144,6 @@ function emitter.create(x,y, frequency, max_p, burst, gravity)
   gravity = gravity or false,
   burst = burst or false,
   burst_amount = max_p,
-  use_pooling = true,
-  pool = {},
   rnd_colour = false,
   rnd_sprite = false,
   use_area = false,
@@ -169,9 +167,6 @@ function emitter.create(x,y, frequency, max_p, burst, gravity)
   p_size_spread_final = 0
  }
  setmetatable (p, emitter)
- if (p.max_p < 1) then
-   p.use_pooling = false end
-
  return p
 end
 
@@ -180,7 +175,7 @@ function emitter:update(dt)
  self.emit(self, dt)
  for p in all(self.particles) do
   p.update(p, dt)
-  if (p.dead) then
+  if p.dead then
    self.remove(self, p)
   end
  end
@@ -193,8 +188,8 @@ function emitter:draw()
 end
 
 function emitter:get_colour()
- if (self.rnd_colour) then
-  if (#self.p_colours > 1) then
+ if self.rnd_colour then
+  if #self.p_colours > 1 then
    return {self.p_colours[flr(rnd(#self.p_colours))+1]}
   else
    return {flr(rnd(16))}
@@ -209,13 +204,13 @@ end
 function emitter:get_new_particle()
  local sprites = self.p_sprites
  -- select random sprite from the sprites list
- if (self.rnd_sprite and self.p_sprites ~= nil) then
+ if self.rnd_sprite and self.p_sprites ~= nil then
   sprites = {self.p_sprites[flr(rnd(#self.p_sprites))+1]}
  end
 
  local x = self.pos.x
  local y = self.pos.y
- if (self.use_area) then
+ if self.use_area then
   -- center it
   local width = self.area_width
   local height = self.area_height
@@ -224,12 +219,8 @@ function emitter:get_new_particle()
  end
 
  local p = {}
- if (self.use_pooling and #self.particles + #self.pool == self.max_p) then
-  p = self.pool[1]
-  del(self.pool, p)
- else
-  p = particle.create()
- end
+
+p = particle.create()
 
  -- (x, y, gravity, colours, sprites, life, angle, speed_initial, speed_final, size_initial, size_final)
  p.set_values (p, -- self
@@ -245,10 +236,10 @@ function emitter:get_new_particle()
 end
 
 function emitter:emit(dt)
- if (self.emitting) then
+ if self.emitting then
   -- burst!
-  if (self.burst) then
-   if (self.max_p <= 0) then
+  if self.burst then
+   if self.max_p <= 0 then
     self.max_p = 50
    end
    for i=1, self.get_amount_to_spawn(self, self.burst_amount) do
@@ -259,7 +250,7 @@ function emitter:emit(dt)
   -- we're continuously emitting
   else
    self.emit_time += self.frequency
-   if (self.emit_time >= 1) then
+   if self.emit_time >= 1 then
     local amount = self.get_amount_to_spawn(self, self.emit_time)
     for i=1, amount do
      self.add_particle(self, self.get_new_particle(self))
@@ -271,7 +262,7 @@ function emitter:emit(dt)
 end
 
 function emitter:get_amount_to_spawn(spawn_amount)
- if (self.max_p ~= 0 and #self.particles + flr(spawn_amount) >= self.max_p) then
+ if self.max_p ~= 0 and #self.particles + flr(spawn_amount) >= self.max_p then
   return self.max_p - #self.particles
  end
  return flr(spawn_amount)
@@ -281,21 +272,12 @@ function emitter:add_particle(p)
  add(self.particles, p)
 end
 
-function emitter:add_multiple(ps)
- for p in all(ps) do
-  add(self.particles, p)
- end
-end
-
 function emitter:remove(p)
  add(self.to_remove, p)
 end
 
 function emitter:remove_dead()
  for p in all(self.to_remove) do
-  if (self.use_pooling) then
-   add(self.pool, p)
-  end
   del(self.particles, p)
  end
  self.to_remove = {}
@@ -308,10 +290,6 @@ end
 
 function emitter:start_emit()
  self.emitting = true
-end
-
-function emitter:stop_emit()
- self.emitting = false
 end
 
 function emitter:is_emitting()

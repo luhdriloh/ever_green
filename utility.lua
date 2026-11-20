@@ -41,18 +41,15 @@ yellow = 10
 -- map platform sprite -> direction
 platform_dir = {}
 platform_dir[34] = { dx=-1, dy=0, color=blue, sp=34 }
-platform_dir[50] = { dx=-1, dy=0, color=red, sp=50 }
-
 platform_dir[35] = { dx=0, dy=-1, color=blue, sp=35 }
-platform_dir[51] = { dx=0, dy=-1, color=red, sp=51 }
-
 platform_dir[36] = { dx=1, dy=0, color=blue, sp=36 }
-platform_dir[52] = { dx=1, dy=0, color=red, sp=52 }
-
 platform_dir[37] = { dx=-0, dy=1, color=blue, sp=37 }
+
+platform_dir[50] = { dx=-1, dy=0, color=red, sp=50 }
+platform_dir[51] = { dx=0, dy=-1, color=red, sp=51 }
+platform_dir[52] = { dx=1, dy=0, color=red, sp=52 }
 platform_dir[53] = { dx=-0, dy=1, color=red, sp=53 }
 
--- yellow platforms
 platform_dir[112] = { dx=-1, dy=0, color=yellow, sp=112 }
 platform_dir[113] = { dx=-0, dy=1, color=yellow, sp=113 }
 platform_dir[114] = { dx=1, dy=0, color=yellow, sp=114 }
@@ -131,7 +128,7 @@ function check_character_grounded(o)
     if grounded then
       platform:attach(o)
     end
-    dynamically_grounded = dynamically_grounded or grounded -- update bounds here!!!! todo
+    dynamically_grounded = dynamically_grounded or grounded
   end
   
   return check_grounded(o.x + map_x_offset, o.y + map_y_offset) or dynamically_grounded

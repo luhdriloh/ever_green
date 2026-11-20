@@ -22,7 +22,6 @@ function _update()
     level_manager:update()
   elseif scene == "menu" then
     menu_obj:update()
-  elseif scene == "level_transition" then
   end
 end
 

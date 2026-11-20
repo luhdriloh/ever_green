@@ -5,7 +5,6 @@ function platform_init(player, platforms, x, y, properties)
       old_x = x * 8,
       old_y = y * 8,
       velocity = -1,
-      start_pos = { x=x*8, y=y*8 },
       player = player,
       riders = {}, -- list of objects standing on this platform
       platforms = platforms,
@@ -46,14 +45,6 @@ function platform_init(player, platforms, x, y, properties)
           self.stop_hit = true
         end
         
-        -- check dynamic collisions with other platforms 
-        for platform in all(self.platforms) do
-          while check_dynamic_collisions(self, platform, 0, 0, 7, 7) and platform != self do
-            self.x -= self.velocity * self.properties.dx
-            self.y -= self.velocity * self.properties.dy
-          end
-        end
-
         -- check dynamic collisions with other platforms 
         for platform in all(self.platforms) do
           while check_dynamic_collisions(self, platform, 0, 0, 7, 7) and platform != self do
