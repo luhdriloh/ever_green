@@ -7,15 +7,26 @@ function _init()
 
   -- Makes it so that btnp only registers once
   poke(0x5f5c, 255)
+  
+  -- set global to indicate scene
+  scene = 'level'
+
   level_manager = level_manager()
   level_manager:init()
-  level_manager:create_level()
+  level_manager:advance_level()
 end
 
 function _update()
-  level_manager:update()
+  if scene == 'level' then
+    level_manager:update()
+  elseif scene == 'menu' then
+  elseif scene == 'level_transition' then
+  end
 end
 
 function _draw()
-  level_manager:draw()
+  if scene == 'menu' then
+  elseif scene == 'level' then
+    level_manager:draw()
+  end
 end

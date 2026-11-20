@@ -20,7 +20,7 @@ function level_manager()
     spikes = nil,
     callbacks = nil,
 
-    level = 15,
+    level = 3,
     background = 0,
 
     transition = nil,
@@ -59,13 +59,9 @@ function level_manager()
     update_transition = function(self)
       if not self.transition then return end
 
-      local x = self.door.x + 4
-      local y = self.door.y + 4
-      local max_grow = max(max(x, 127-x), max(y, 127-y))
-
       if self.transition == "out" then
         self.grow += 4
-        if self.grow >= max_grow then
+        if self.grow >= 64 then
           self.transition = "text"
           self.text_frame = 0
         end
@@ -74,12 +70,12 @@ function level_manager()
         if self.text_frame == 30 then
           self.level = self.pending_level
           self:create_level()
-          self.grow = 0
+          self.grow = 64
           self.transition = "in"
         end
       elseif self.transition == "in" then
-        self.grow += 4
-        if self.grow >= max_grow then
+        self.grow -= 4
+        if self.grow <= 0 then
           self.transition = nil
         end
       end
@@ -87,18 +83,16 @@ function level_manager()
 
     draw_transition = function(self)
       if not self.transition then return end
-      local x = self.door.x
-      local y = self.door.y
+      local g = self.grow
 
-      if self.transition == "out" then
-        rectfill(x - self.grow, y - self.grow, x + self.grow, y + self.grow, 0)
+      if self.transition == "out" or self.transition == "in" then
+        rectfill(0, 0, 127, g, 0)
+        rectfill(0, 127-g, 127, 127, 0)
+        rectfill(0, 0, g, 127, 0)
+        rectfill(127-g, 0, 127, 127, 0)
       elseif self.transition == "text" then
         rectfill(0, 0, 127, 127, 0)
         print("level " .. self.pending_level, 48, 60, 15)
-      elseif self.transition == "in" then
-        local max_grow = max(max(x, 127-x), max(y, 127-y))
-        local g = max_grow - self.grow
-        rectfill(x - g, y - g, x + g, y + g, 0)
       end
     end,
 
@@ -212,12 +206,10 @@ function level_manager()
       map(map_x, map_y, 0, 0, 16, 16, 147)
 
       foreach(self.platforms, function(platform) platform:draw() end)
-      foreach(self.buttons, function(button) button:draw() end)      
-
-      self.door:draw()
-      
+      foreach(self.buttons, function(button) button:draw() end)            
       foreach(self.dialog_posts, function(dialog) dialog:draw() end)
       
+      self.door:draw()
       self.player:draw()
 
       foreach(self.grass, function(g) g:draw() end)

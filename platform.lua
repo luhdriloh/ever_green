@@ -32,10 +32,8 @@ function platform_init(player, platforms, x, y, properties)
         self.y += self.velocity * self.properties.dy
 
         -- set map bounds
-        self.x = max(self.x, 0)
-        self.x = min(self.x, 120)
-        self.y = max(self.y, 0)
-        self.y = min(self.y, 120)
+        self.x = mid(self.x, 0, 120)
+        self.y = mid(self.y, 0, 120)
 
         -- see if we've hit any platform stops 
         -- collision checks

@@ -16,6 +16,10 @@ function plinit()
     clone = false,
     stuck_frames = 0,
     dead = false,
+    start_restart = false,
+    restart_frames = 0,
+    intensity = 0,
+    shake_control = 1,
     switch_orbs_frames = 0, -- keeps track of the switch orb animation 3 frames long
 
     -- animation values
@@ -57,6 +61,21 @@ function plinit()
       end
 
       if self.clone == false then
+        if btn(2) and self.grounded and self.start_restart then
+          self.restart_frames += 1
+          self.intensity += self.shake_control
+          if self.restart_frames > 60 then
+            self.restart_frames = 0
+            self.intensity = 0
+            self.start_restart = false
+            self:respawn()
+          end
+        elseif not btn(2) then
+          self.restart_frames = 0
+          self.intensity = 0
+          self.start_restart = true
+        end
+
         if btnp(3) and self.grounded then -- switch orbs
           local orb_count = count(self.orbs)
           if orb_count > 0 then
@@ -149,7 +168,11 @@ function plinit()
     end,
 
     draw = function(self)
+      if self.intensity > 0 then
+        self:shake()
+      end
       spr(self.sp, self.x, self.y, 1, 1, self.flx)
+      camera()
     end,
 
     move_player_x = function(self, x_dist)
@@ -185,6 +208,18 @@ function plinit()
         self.y = self.start_y
         particle_manager:use_orb(self, { 5, 7 }, 2)
       end
+    end,
+
+    shake = function(self)
+      local shake_x=rnd(self.intensity) - (self.intensity /2)
+      local shake_y=flr(rnd(1.9))
+
+      --offset the camera
+      camera( shake_x, shake_y )
+
+      --ease shake and return to normal
+      self.intensity = min(self.intensity, 2) * .9
+      if self.intensity < .3 then self.intensity = 0 end
     end,
   }
 end

@@ -58,7 +58,6 @@ platform_dir[113] = { dx=-0, dy=1, color=yellow, sp=113 }
 platform_dir[114] = { dx=1, dy=0, color=yellow, sp=114 }
 platform_dir[115] = { dx=-0, dy=-1, color=yellow, sp=115 }
 
-
 -- button info
 button_info = {}
 button_info[48] = { sp=48, color=red }
