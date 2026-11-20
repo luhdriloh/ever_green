@@ -95,7 +95,8 @@ function plinit()
       end
 
       if btn(5) and self.grounded and not self.freeze then
-        self.dy = jump_speed
+        sfx(11)
+        self.dy = jump_speed 
         self.grounded = false
       end
 
@@ -150,6 +151,7 @@ function plinit()
       -- jump land particles
       if (self.state.name == 'jump' or self.state.name == 'fall')
         and (newstate.name == 'idle' or newstate.name == 'walk') then
+        sfx(10)
         particle_manager:land(self, true)
       end
 
@@ -195,6 +197,7 @@ function plinit()
     respawn = function(self)
       -- set all orbs to 'placed' = false
       self.dead = true
+      sfx(9)
       for orb in all(self.orbs) do
         orb.placed = false
         if orb.clone_active != nil then

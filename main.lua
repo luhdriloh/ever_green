@@ -8,6 +8,7 @@ function _init()
   -- Makes it so that btnp only registers once
   poke(0x5f5c, 255)
 
+  music(9, 1000)
   scene = "menu"
 
   level_manager = level_manager()

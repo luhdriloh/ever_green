@@ -16,11 +16,13 @@ function clone_orb_init(x, y, platforms, index)
 
     use = function(self, o)
       if self.clone_active then
+        sfx(12)
         particle_manager:use_orb(self.clone, { orange, 4 }, 1)
         self.clone.x = -10
         self.clone.y = -10
         self.clone_active = false
       elseif not self.placed then
+        sfx(10)
         self:set(o.x, o.y)
       elseif self.placed then
         self.placed = false

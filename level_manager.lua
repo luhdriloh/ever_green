@@ -57,6 +57,10 @@ function level_manager()
     end,
 
     advance_level = function(self, from_menu, level)
+      if self.level == 16 then
+        self.level = 0
+        scene = "menu"
+      end
       self.from_menu = from_menu or self.from_menu
       self.level = level and level or self.level
       self.pending_level = self.level + 1

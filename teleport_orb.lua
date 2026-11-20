@@ -20,8 +20,10 @@ function teleport_orb_init(x, y, platforms, index)
 
     use = function(self, o)
       if not self.placed then
+        sfx(10)
         self:set(o.x, o.y-1)
       elseif self.placed then
+        sfx(12)
         particle_manager:use_orb(o, { 11,3 }, 1)
         particle_manager:use_orb(self, { 11,3 }, 2)
         self.placed = false

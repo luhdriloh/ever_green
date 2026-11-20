@@ -12,9 +12,10 @@ function finish_door_init(player, advance_level_callback)
     end,
 
     update = function(self)
-      if abs(player.x - self.x) < 5 and 
-         abs(player.y - self.y) < 5 then
+      if abs(player.x - self.x) < 3 and 
+         abs(player.y - self.y) < 2 then
         self.advance_level_callback(self)
+        sfx(17)
       end
     end,
 
