@@ -116,6 +116,7 @@ function menu()
 
     -- box border
     local bx, by, bw, bh = self.box_x, self.box_y+self.top_y, self.box_w, self.box_h
+    print("❎select 🅾️back", bx-2, by + 45, 7)
 
     -- tab-specific box content
     if self.tab == 0 then
@@ -181,7 +182,7 @@ function menu()
     rectfill(bx-24, by-3, bx+82, by+32, 1)
     rect(bx-24, by-3, bx+82, by+32, 7)
 
-    print(" ❎  jump\n 🅾️  use power orb\n⬅️➡️ move\n ⬇️  cycle power orbs\n ⬆️  hold down to respawn\n", bx-20, by, 7)
+    print(" ❎  jump\n 🅾️  use power orb\n⬅️➡️ move\n ⬇️  cycle power orbs\n ⬆️  hold to respawn\n", bx-20, by, 7)
   end
 
   return m
