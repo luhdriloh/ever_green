@@ -166,22 +166,6 @@ function update_frame(o, animstate)
   end
 end
 
-function update_frame_ping_pong(o, animstate)
-  o.step += 1
-  if animstate.per_frame == 0 then
-    o.sp = animstate.start
-  elseif o.step >= animstate.per_frame then
-    o.step = 0
-    if not o.dir then o.dir = 1 end
-    o.sp = o.sp + o.dir
-    if o.sp >= animstate.last then
-      o.dir = -1
-    elseif o.sp <= animstate.start then
-      o.dir = 1
-    end
-  end
-end
-
 function check_collision(o, flag_type, x1_offset, y1_offset, x2_offset, y2_offset)
   local x = o.x + map_x_offset
   local y = o.y + map_y_offset
