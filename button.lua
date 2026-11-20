@@ -1,7 +1,7 @@
 function button_init(players, platforms, x, y, button_props)
 		return {
-			x = x * 8,
-      y = y * 8,
+			x = x,
+      y = y,
 			players = players,
 			platforms = platforms,
 			button_props = button_props,

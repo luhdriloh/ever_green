@@ -26,7 +26,7 @@ function clone_orb_init(x, y, platforms, index)
         self.placed = false
         self.clone_active = true
         particle_manager:use_orb(self, { orange, 4 }, 1)
-        self.clone:level_set(self.x, self.y, nil, self.platforms, true, true)
+        self.clone:level_set(self.x, self.y, nil, self.platforms, true)
         self.sp = orange_orb_anim.start
       end
     end,

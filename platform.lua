@@ -1,9 +1,9 @@
 function platform_init(player, platforms, x, y, properties)
     return {
-      x = x * 8,
-      y = y * 8,
-      old_x = x * 8,
-      old_y = y * 8,
+      x = x,
+      y = y,
+      old_x = x,
+      old_y = y,
       velocity = -1,
       player = player,
       riders = {}, -- list of objects standing on this platform

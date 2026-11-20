@@ -14,7 +14,6 @@ function level_manager()
     platforms = nil,
     door = nil,
     dialog_posts = nil,
-    grass = nil,
     butterflies = nil,
     spikes = nil,
     callbacks = nil,
@@ -45,7 +44,7 @@ function level_manager()
       prev_time = time()
       delta_time = time() - prev_time
 
-      local S="1,0,0,0,0,0,5,1,2,0,0,0,0,0,5,1,3,0,0,0,0,0,5,1,4,5,1,0,0,0,5,1,0,0,0,1,0,1,14,5,0,0,0,1,0,1,14,5,0,0,0,1,0,1,14,5,0,0,0,1,0,1,14,5,6,0,0,2,0,5,6,13,0,0,0,2,0,5,6,13,0,0,0,2,0,5,6,13,7,8,2,0,0,14,15,6,4,0,0,0,1,14,15,6,0,0,0,0,2,14,15,6,0,0,0,1,1,14,15,6,0,0,0,1,1,14,15,6"
+      local S="1,0,0,0,0,0,5,1,2,0,0,0,0,0,5,1,3,0,0,0,0,0,5,1,4,5,1,0,0,0,5,1,0,0,0,1,0,1,14,5,0,0,0,1,0,1,14,5,0,0,0,1,0,1,14,5,0,0,0,1,0,1,14,5,6,0,0,2,0,5,6,13,9,0,0,2,0,5,6,13,0,0,0,2,0,5,6,13,7,8,2,0,0,14,15,6,0,0,0,0,1,14,15,6,0,0,0,0,2,14,15,6,0,0,0,1,1,14,15,6,0,0,0,1,1,14,15,6"   
       local K={"dialog","orb_dialog","callback_index","teleport_orbs","clone_orbs","background","light_cloud","dark_cloud"}
       local T=split(S)
       local L={}
@@ -112,7 +111,6 @@ function level_manager()
       self.platforms = {}
       self.orbs = {}
       self.dialog_posts = {}
-      self.grass = {}
       self.butterflies = {}
       self.spikes = {}
       self.players = {}
@@ -149,23 +147,23 @@ function level_manager()
           local x_coord = x + map_x
           local y_coord = y + map_y
           local sprite_num = mget(x_coord, y_coord)
+          local x_pix = x*8
+          local y_pix = y*8
           
           mset(x_coord, y_coord, 0)
 
           if sprite_num == 11 then
-            self.door:level_set(x, y)
+            self.door:level_set(x_pix, y_pix)
           elseif sprite_num == 16 then
-            self.player:level_set(x, y, self.orbs, self.platforms)
+            self.player:level_set(x_pix, y_pix, self.orbs, self.platforms)
           elseif sprite_num == 10 then
-            add(self.dialog_posts, dialog_post_init(self.player, sprite_num, x, y, level_data.dialog))
+            add(self.dialog_posts, dialog_post_init(self.player, sprite_num, x_pix, y_pix, level_data.dialog))
           elseif sprite_num == 13 or sprite_num == 30 then
-            add(self.dialog_posts, dialog_post_init(self.player, sprite_num, x, y, level_data.orb_dialog, self.callbacks[level_data.callback_index]))
+            add(self.dialog_posts, dialog_post_init(self.player, sprite_num, x_pix, y_pix, level_data.orb_dialog, self.callbacks[level_data.callback_index]))
           elseif platform_dir[sprite_num] then
-            add(self.platforms, platform_init(self.player, self.platforms, x, y, platform_dir[sprite_num]))
+            add(self.platforms, platform_init(self.player, self.platforms, x_pix, y_pix, platform_dir[sprite_num]))
           elseif button_info[sprite_num] then
-            add(self.buttons, button_init(self.players, self.platforms, x, y, button_info[sprite_num]))
-          elseif grass_sprite == sprite_num then
-            add(self.grass, grass_init(self.player, x, y))
+            add(self.buttons, button_init(self.players, self.platforms, x_pix, y_pix, button_info[sprite_num]))
           elseif butterfly_sprite == sprite_num then
             add(self.butterflies, butterfly_init(x, y))
           elseif spike_bounds[sprite_num] then
@@ -220,7 +218,6 @@ function level_manager()
         self.player:draw()
 
         draw_helper(self.buttons)
-        draw_helper(self.grass)
         draw_helper(self.orbs)
         draw_helper(self.butterflies)
         draw_helper(self.spikes)
@@ -326,6 +323,7 @@ end
 --     dark_cloud = 13,
 --   },
 --   { -- 10
+--     dialog = 9,
 --     teleport_orbs = 2,
 --     clone_orbs = 0,
 --     background = 5,
@@ -350,7 +348,6 @@ end
 --     dark_cloud = 6,
 --   },
 --   { -- 13
---     dialog = 4,
 --     teleport_orbs = 0,
 --     clone_orbs = 1,
 --     background = 14,

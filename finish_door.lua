@@ -7,8 +7,8 @@ function finish_door_init(player, advance_level_callback)
     advance_level_callback = advance_level_callback,
 
     level_set = function(self, x, y)
-      self.x = x * 8
-      self.y = y * 8
+      self.x = x
+      self.y = y
     end,
 
     update = function(self)

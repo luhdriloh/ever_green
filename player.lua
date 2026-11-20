@@ -28,9 +28,9 @@ function plinit()
     step = 0,
     orbs = nil,
 
-    level_set = function(self, x, y, orbs, platforms, clone, pixel_space)
-      self.x = pixel_space and x or x * 8
-      self.y = pixel_space and y or y * 8
+    level_set = function(self, x, y, orbs, platforms, clone)
+      self.x = x
+      self.y = y
       self.start_x = self.x
       self.start_y = self.y
       self.active_orb = 1
@@ -212,13 +212,12 @@ function plinit()
 
     shake = function(self)
       local shake_x=rnd(self.intensity) - (self.intensity /2)
-      local shake_y=flr(rnd(1.9))
 
       --offset the camera
-      camera( shake_x, shake_y )
+      camera(shake_x, 0)
 
       --ease shake and return to normal
-      self.intensity = min(self.intensity, 2) * .9
+      self.intensity = min(self.intensity, 1.9) * .9
       if self.intensity < .3 then self.intensity = 0 end
     end,
   }

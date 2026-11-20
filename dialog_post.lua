@@ -1,7 +1,7 @@
 function dialog_post_init(player, sp, x, y, counter, activate_callback)
   return {
-    x = x * 8,
-    y = y * 8,
+    x = x,
+    y = y,
     sp = sp,
     butn_sp = 26,
     player = player,
@@ -14,10 +14,11 @@ function dialog_post_init(player, sp, x, y, counter, activate_callback)
       "press ❎ to jump on the ledges. also if you're ever stuck hold down ⬆️ to respawn. try out your new skilz now!",
       "try standing on the blue button to see if anything happens.",
       "have some of my teleport powers. go grab that green teleport orb.",
-      "press 🅾️ to place down the teleport orb and again to teleport to it. you can also look at yourr orb inventory on the top right.",
-      "you're going to need another power orb. i've put it in your inventory. remember, you can press ⬇️ to cycle through your orbs. look at your hands or the big arrow to see which orb is active.",
+      "press 🅾️ to place down a teleport orb and again to teleport to it. you can also look at yourr orb inventory on the top right.",
+      "you're going to need another power orb, i've already put it in your inventory. remember, you can press ⬇️ to cycle through your orbs. look at your hands or the big arrow to see which orb is active.",
       "go grab that orange clone orb!",
-      "press 🅾️ to place down the clone orb, again to activate your clone, and a third time to deactivate your clone and return it to your inventory!",
+      "press 🅾️ to place down a clone orb, again to activate your clone, and a third time to deactivate it and return it to your inventory!",
+      "a couple of hints, yellow platforms are a little different, and orbs can survive going through spikes but not you!",
     },
 
     update = function(self)

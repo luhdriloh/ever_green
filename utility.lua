@@ -6,7 +6,7 @@ anim_speed = 10
 jump_speed = -5
 step_per_frame = 3
 gravity = 12
-dyupdate = gravity / 30
+dyupdate = .4
 max_dy = 7
 frame = 0
 
